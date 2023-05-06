@@ -1,5 +1,5 @@
 class Particle:
-    size = 5
+    size = 10
 
     def __init__(self, posX, posY, color):
         self.color = color

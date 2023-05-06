@@ -1,10 +1,11 @@
 import particle
 from tkinter import Tk, Frame, Canvas
 import random
+import math
+import time
 
 canvasSize = 800
 dt = 0.02
-particlesToDraw = []
 particles = []
 
 
@@ -18,17 +19,33 @@ def genRandomParticles(numParticles, color):
 
     return particles
 
+def rule(particle1, particle2, g):
+    
+    fx = 0
+    fy = 0
+    
+    a = particle1
+    b = particle2
+
+    dx = a.posX - b.posX
+    dy = a.posY - b.posY
+    d = math.sqrt(dx*dx + dy*dy)
+    if (d > 0):
+        F = -g * 1/d
+        fx += (F * dx)
+        fy += (F * dy)
+    
+    a.posX += fx
+    a.posY += fy
+
 def update():
 
-
+    rule(particles[0], particles[1], 1)
 
 
     # move particles
     object = 1
-    for prtcl in particlesToDraw:
-        # change to new value
-        prtcl.posX += 1
-        prtcl.posY += 1
+    for prtcl in particles:
         canvas.moveto(object, prtcl.posX, prtcl.posY)
         object += 1
     
@@ -50,16 +67,20 @@ def main():
     # particles.extend(redParticles)
     # particles.extend(blueParticles) 
 
-    particlesToDraw.append(particle.Particle(400, 400, "blue"))
-    particlesToDraw.append(particle.Particle(600, 600, "red"))
+    particles.append(particle.Particle(400, 400, "blue"))
+    particles.append(particle.Particle(600, 600, "red"))
 
-    for prtcl in particlesToDraw:
-        particles.append(canvas.create_oval(prtcl.posX, prtcl.posY, prtcl.posX + prtcl.size, prtcl.posY + prtcl.size, fill=prtcl.color))
+    # redParticles = genRandomParticles(1, "red")
+    # blueParticles = genRandomParticles(1, "blue")
+
+    for prtcl in particles:
+        canvas.create_oval(prtcl.posX, prtcl.posY, prtcl.posX + prtcl.size, prtcl.posY + prtcl.size, fill=prtcl.color)
 
     while True:
         update()
         window.update_idletasks()
         window.update()
+        time.sleep(dt)
     
 if __name__ == '__main__':
     main()
