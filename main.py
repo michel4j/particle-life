@@ -3,49 +3,89 @@ from tkinter import Tk, Frame, Canvas
 import random
 import math
 import time
+import enum
+
+class Color(enum.Enum):
+   red = 1
+   blue = 2
+   green = 3
+
+matrix =[[0,    1,     2,      3    ], 
+         [1,    0.5,   -0.5,   -0.3 ], 
+         [2,    1,     0.5,    1    ],
+         [3,    -0.5,  1,      0.5  ]]
 
 canvasSize = 800
 dt = 0.02
+rMax = 250
 particles = []
+frictionHalfLife = 0.04
+frictionFactor = math.pow(0.5, dt / frictionHalfLife)
 
 
 def genRandomParticles(numParticles, color):
+    colorValue = getattr(Color, color).value
+    
     particles = []
 
     for i in range(numParticles):
         posX = random.uniform(0, canvasSize)
         posY = random.uniform(0, canvasSize)
-        particles.append(particle.Particle(posX, posY, color))
+        particles.append(particle.Particle(posX, posY, colorValue))
 
     return particles
 
-def rule(particle1, particle2, g):
-    
-    fx = 0
-    fy = 0
-    
-    a = particle1
-    b = particle2
+# a is attraction matrix value: make matrix or set hardcoded for now (what value?)
+def force(r, a):
+    beta = 0.3
+    if (r < beta):
+        return r / beta - 1
+    elif((beta < r) & (r < 1)):
+        return a * ( 1 - abs(2 * r - 1 - beta) / (1 - beta))
+    else:
+        return 0
+        
 
-    dx = a.posX - b.posX
-    dy = a.posY - b.posY
-    d = math.sqrt(dx*dx + dy*dy)
-    if (d > 0):
-        F = -g * 1/d
-        fx += (F * dx)
-        fy += (F * dy)
-    
-    a.posX += fx
-    a.posY += fy
+
+
+def updateVelocities():
+    for prtcl in particles:
+        totalForceX = 0
+        totalForceY = 0
+
+        for otherPrtcl in particles:
+            if(otherPrtcl == prtcl):
+                continue
+            # calculte distance between particles
+            rx =  otherPrtcl.posX - prtcl.posX
+            ry =  otherPrtcl.posY - prtcl.posY
+            r = math.sqrt(rx**2 + ry**2)
+            # check if distance is greater than 0 and less than rMax
+            if ((r > 0) & (r < rMax)):
+                f = force((r / rMax), matrix[otherPrtcl.color][prtcl.color])
+                totalForceX += f * rx / r
+                totalForceY += f * ry / r
+
+        totalForceX *= rMax
+        totalForceY *= rMax
+
+        prtcl.velX *= frictionFactor
+        prtcl.velY *= frictionFactor
+
+        prtcl.velX += totalForceX * dt
+        prtcl.velY += totalForceY * dt
+
 
 def update():
 
-    rule(particles[0], particles[1], 1)
+    updateVelocities()
 
 
     # move particles
     object = 1
     for prtcl in particles:
+        prtcl.posX += prtcl.velX
+        prtcl.posY += prtcl.velY
         canvas.moveto(object, prtcl.posX, prtcl.posY)
         object += 1
     
@@ -67,14 +107,15 @@ def main():
     # particles.extend(redParticles)
     # particles.extend(blueParticles) 
 
-    particles.append(particle.Particle(400, 400, "blue"))
-    particles.append(particle.Particle(600, 600, "red"))
+    redParticles = genRandomParticles(25, "red")
+    blueParticles = genRandomParticles(25, "blue")
 
-    # redParticles = genRandomParticles(1, "red")
-    # blueParticles = genRandomParticles(1, "blue")
+    particles.extend(redParticles)
+    particles.extend(blueParticles)
 
     for prtcl in particles:
-        canvas.create_oval(prtcl.posX, prtcl.posY, prtcl.posX + prtcl.size, prtcl.posY + prtcl.size, fill=prtcl.color)
+        stringValue = Color(prtcl.color).name
+        canvas.create_oval(prtcl.posX, prtcl.posY, prtcl.posX + prtcl.size, prtcl.posY + prtcl.size, fill=stringValue)
 
     while True:
         update()
