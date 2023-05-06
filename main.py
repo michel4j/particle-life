@@ -27,6 +27,7 @@ rMax = 80
 particles = []
 frictionHalfLife = 0.04
 frictionFactor = math.pow(0.5, dt / frictionHalfLife)
+border = True
 
 
 def genRandomParticles(numParticles, color):
@@ -90,12 +91,32 @@ def update():
     # move particles
     object = 1
     for prtcl in particles:
-        prtcl.posX += prtcl.velX
-        if prtcl.posX > canvasSizeXMax or prtcl.posX < canvasSizeXMin:
-            prtcl.posX -= prtcl.velX
-        prtcl.posY += prtcl.velY
-        if prtcl.posY > canvasSizeYMax or prtcl.posY < canvasSizeYMin:
-            prtcl.posY -= prtcl.velY
+        
+        if(border):
+            # revert velocity if particle is out of bounds
+            prtcl.posX += prtcl.velX
+            if prtcl.posX > canvasSizeXMax or prtcl.posX < canvasSizeXMin:
+                prtcl.posX -= prtcl.velX
+
+            prtcl.posY += prtcl.velY
+            if prtcl.posY > canvasSizeYMax or prtcl.posY < canvasSizeYMin:
+                prtcl.posY -= prtcl.velY
+        else:
+            # wrap particle around canvas if out of bounds
+            prtcl.posX += prtcl.velX
+            if prtcl.posX > canvasSizeXMax:
+                prtcl.posX = canvasSizeXMin
+            
+            if prtcl.posX < canvasSizeXMin:
+                prtcl.posX = canvasSizeXMax
+
+            prtcl.posY += prtcl.velY
+            if prtcl.posY > canvasSizeYMax:
+                prtcl.posY = canvasSizeYMin
+
+            if prtcl.posY < canvasSizeYMin:
+                prtcl.posY = canvasSizeYMax
+
         canvas.moveto(object, prtcl.posX, prtcl.posY)
         object += 1
     
