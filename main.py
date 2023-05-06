@@ -10,6 +10,11 @@ class Color(enum.Enum):
    blue = 1
    green = 2
 
+matrix =[[0.3,   -0.5,   -0.3, 0.3 ], 
+         [1,     0.5,    1,    0.5 ],
+         [-0.5,  1,      0.5,  -1  ],
+         [-0.3,  1,      0.5,  0.8 ]]
+
 def generateRandomAccelerationMatrix():
     matrix = [[0 for x in range(len(Color)+1)] for y in range(len(Color)+1)]
     for i in range(len(Color)+1):
@@ -17,15 +22,15 @@ def generateRandomAccelerationMatrix():
             matrix[i][j] = random.uniform(-1, 1)
     return matrix
 
-matrix = generateRandomAccelerationMatrix()
+#matrix = generateRandomAccelerationMatrix()
 
 canvasSizeXMin = 0
-canvasSizeXMax = 1000
+canvasSizeXMax = 1200
 canvasSizeYMin = 0
-canvasSizeYMax = 1000
+canvasSizeYMax = 1200
 
 dt = 0.01
-rMax = 120
+rMax = 300
 particles = []
 frictionHalfLife = 0.04
 frictionFactor = math.pow(0.5, dt / frictionHalfLife)
