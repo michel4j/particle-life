@@ -6,16 +6,18 @@ import time
 import enum
 
 class Color(enum.Enum):
-   red = 1
-   blue = 2
-   green = 3
-   yellow = 4
+   red = 0
+   blue = 1
+   green = 2
 
-matrix =[[0,    1,     2,      3,    4   ], 
-         [1,    0.3,   -0.5,   -0.3, 0.3 ], 
-         [2,    1,     0.5,    1,    0.5 ],
-         [3,    -0.5,  1,      0.5,  -1  ],
-         [4,    -0.3,  1,      0.5,  0.8 ]]
+def generateRandomAccelerationMatrix():
+    matrix = [[0 for x in range(len(Color)+1)] for y in range(len(Color)+1)]
+    for i in range(len(Color)+1):
+        for j in range(len(Color)+1):
+            matrix[i][j] = random.uniform(-1, 1)
+    return matrix
+
+matrix = generateRandomAccelerationMatrix()
 
 canvasSizeXMin = 0
 canvasSizeXMax = 1000
@@ -23,11 +25,11 @@ canvasSizeYMin = 0
 canvasSizeYMax = 1000
 
 dt = 0.01
-rMax = 80
+rMax = 120
 particles = []
 frictionHalfLife = 0.04
 frictionFactor = math.pow(0.5, dt / frictionHalfLife)
-border = True
+border = False
 
 
 def genRandomParticles(numParticles, color):
@@ -42,7 +44,7 @@ def genRandomParticles(numParticles, color):
 
     return particles
 
-# a is attraction matrix value: make matrix or set hardcoded for now (what value?)
+# fuck me im not writing this function myself 
 def force(r, a):
     beta = 0.3
     if (r < beta):
@@ -51,11 +53,8 @@ def force(r, a):
         return a * ( 1 - abs(2 * r - 1 - beta) / (1 - beta))
     else:
         return 0
-        
 
-
-
-def updateVelocities():
+def updateParticleVelocities():
     for prtcl in particles:
         totalForceX = 0
         totalForceY = 0
@@ -82,13 +81,7 @@ def updateVelocities():
         prtcl.velX += totalForceX * dt
         prtcl.velY += totalForceY * dt
 
-
-def update():
-
-    updateVelocities()
-
-
-    # move particles
+def updateParticlePositions():
     object = 1
     for prtcl in particles:
         
@@ -119,8 +112,11 @@ def update():
 
         canvas.moveto(object, prtcl.posX, prtcl.posY)
         object += 1
-    
-    
+
+def update():
+
+    updateParticleVelocities()
+    updateParticlePositions()
 
 def main():
     global window
@@ -130,16 +126,8 @@ def main():
     canvas = Canvas(width=canvasSizeXMax, height=canvasSizeYMax, background='black')
     canvas.pack()
 
-    redParticles = genRandomParticles(50, "red")
-    blueParticles = genRandomParticles(50, "blue")
-    greenParticles =  genRandomParticles(50, "green")
-    yellowParticles =  genRandomParticles(50, "yellow")
-
-
-    particles.extend(redParticles)
-    particles.extend(blueParticles)
-    particles.extend(greenParticles)
-    particles.extend(yellowParticles)
+    for i in range(len(Color)):
+        particles.extend(genRandomParticles(50, Color(i).name))
 
     for prtcl in particles:
         stringValue = Color(prtcl.color).name
