@@ -9,15 +9,21 @@ class Color(enum.Enum):
    red = 1
    blue = 2
    green = 3
+   yellow = 4
 
-matrix =[[0,    1,     2,      3    ], 
-         [1,    0.5,   -0.5,   -0.3 ], 
-         [2,    1,     0.5,    1    ],
-         [3,    -0.5,  1,      0.5  ]]
+matrix =[[0,    1,     2,      3,    4   ], 
+         [1,    0.3,   -0.5,   -0.3, 0.3 ], 
+         [2,    1,     0.5,    1,    0.5 ],
+         [3,    -0.5,  1,      0.5,  -1  ],
+         [4,    -0.3,  1,      0.5,  0.8 ]]
 
-canvasSize = 800
-dt = 0.02
-rMax = 250
+canvasSizeXMin = 0
+canvasSizeXMax = 1000
+canvasSizeYMin = 0
+canvasSizeYMax = 1000
+
+dt = 0.01
+rMax = 80
 particles = []
 frictionHalfLife = 0.04
 frictionFactor = math.pow(0.5, dt / frictionHalfLife)
@@ -29,8 +35,8 @@ def genRandomParticles(numParticles, color):
     particles = []
 
     for i in range(numParticles):
-        posX = random.uniform(0, canvasSize)
-        posY = random.uniform(0, canvasSize)
+        posX = random.uniform(canvasSizeXMin, canvasSizeXMax)
+        posY = random.uniform(canvasSizeYMin, canvasSizeYMax)
         particles.append(particle.Particle(posX, posY, colorValue))
 
     return particles
@@ -85,7 +91,11 @@ def update():
     object = 1
     for prtcl in particles:
         prtcl.posX += prtcl.velX
+        if prtcl.posX > canvasSizeXMax or prtcl.posX < canvasSizeXMin:
+            prtcl.posX -= prtcl.velX
         prtcl.posY += prtcl.velY
+        if prtcl.posY > canvasSizeYMax or prtcl.posY < canvasSizeYMin:
+            prtcl.posY -= prtcl.velY
         canvas.moveto(object, prtcl.posX, prtcl.posY)
         object += 1
     
@@ -96,22 +106,19 @@ def main():
     window=Tk()
     window.title('Particle Life')
     global canvas
-    canvas = Canvas(width=canvasSize, height=canvasSize, background='black')
+    canvas = Canvas(width=canvasSizeXMax, height=canvasSizeYMax, background='black')
     canvas.pack()
 
-    # whiteParticles = genRandomParticles(25, "white")
-    # redParticles = genRandomParticles(25, "red")
-    # blueParticles = genRandomParticles(25, "blue")
+    redParticles = genRandomParticles(50, "red")
+    blueParticles = genRandomParticles(50, "blue")
+    greenParticles =  genRandomParticles(50, "green")
+    yellowParticles =  genRandomParticles(50, "yellow")
 
-    # particles.extend(whiteParticles)
-    # particles.extend(redParticles)
-    # particles.extend(blueParticles) 
-
-    redParticles = genRandomParticles(25, "red")
-    blueParticles = genRandomParticles(25, "blue")
 
     particles.extend(redParticles)
     particles.extend(blueParticles)
+    particles.extend(greenParticles)
+    particles.extend(yellowParticles)
 
     for prtcl in particles:
         stringValue = Color(prtcl.color).name
