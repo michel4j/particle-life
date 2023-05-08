@@ -4,16 +4,16 @@ import random
 
 # Canvas
 canvasSizeXMin = 0
-canvasSizeXMax = 800
+canvasSizeXMax = 1200
 canvasSizeYMin = 0
-canvasSizeYMax = 800
+canvasSizeYMax = 1200
 border = False
 
 # Time
 dt = 0.01
 
 # Particles 
-rMax = 150
+rMax = 180
 particles = []
 frictionHalfLife = 0.04
 frictionFactor = math.pow(0.5, dt / frictionHalfLife)
@@ -22,6 +22,7 @@ class Color(enum.Enum):
    red = 0
    blue = 1
    green = 2
+   white = 3
 
 # Attraction matrices
 matrix1 =[[1,    0.8,  0.6,  0.4    ], 
@@ -39,7 +40,7 @@ matrix3 =[[-1,    0.8,  0.6,  0.4    ],
           [0.6,  0.8,  -1,    0.8    ],
           [0.4,  0.6,  0.8,  -1      ]]
 
-matrix3 =[[-1,    0.8,  0.6,  0.4    ], 
+matrix4 =[[-1,    0.8,  0.6,  0.4    ], 
           [0.8,  -1,    -0.8,  0.6    ],
           [-0.6,  0.8,  -1,    0.8    ],
           [0.4,  -0.6,  0.8,  -1      ]]
@@ -51,5 +52,5 @@ def generateRandomAttractionMatrix():
             matrix[i][j] = random.uniform(-1, 1)
     return matrix
 
-#matrix = generateRandomAttractionMatrix()
-matrix = matrix3
+matrix = matrix1
+matrix = generateRandomAttractionMatrix()

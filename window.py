@@ -59,7 +59,7 @@ class Window():
         
     def DrawParticles():
         for i in range(len(globals.Color)):
-            globals.particles.extend(Window.genRandomParticles(50, globals.Color(i).name))
+            globals.particles.extend(Window.genRandomParticles(150, globals.Color(i).name))
 
         for prtcl in globals.particles:
             stringValue = globals.Color(prtcl.color).name
