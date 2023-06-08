@@ -1,5 +1,4 @@
-from tkinter import Tk, Canvas
-import particle_canvas
+from tkinter import Tk, Canvas, Label, StringVar
 
 class Window():
     
@@ -13,15 +12,28 @@ class Window():
         self.window.title(title)
 
         # Create canvas 
-        global canvas
         self.canvas = Canvas(width=size['Width'], height=size['Height'], bg=background)
         self.canvas.pack()
+
+        # Create FPS text
+        self.fps_label = Label(self.canvas, text = "FPS: 000", font=('serif', 10, 'bold'))
+        self.fps_label.config(bg='black', fg='white')
+        self.fps_label.pack()
+        self.canvas.create_window(32, 13, window=self.fps_label)
 
         # Particle canvas
         self.particleCanvas = particle_canvas
 
+    def updateFPS(self, fps):
+        if fps < 10:
+            self.fps_label.config(text="FPS: 00" + str(fps))
+        elif fps < 100:
+            self.fps_label.config(text="FPS: 0" + str(fps))
+        else:
+            self.fps_label.config(text="FPS: " + str(fps))
+    
     def updateParticlePositions(self):
-        object = 1
+        object = 2 # 1 is fps text
         for prtcl in self.particleCanvas.particles:
             
             if(self.particleCanvas.border):
@@ -54,5 +66,4 @@ class Window():
         
     def DrawParticles(self):
         for prtcl in self.particleCanvas.particles:
-            stringValue = prtcl.color
-            self.canvas.create_oval(prtcl.posX, prtcl.posY, prtcl.posX + prtcl.size, prtcl.posY + prtcl.size, fill=stringValue)
+            self.canvas.create_oval(prtcl.posX, prtcl.posY, prtcl.posX + prtcl.size, prtcl.posY + prtcl.size, fill=prtcl.color)

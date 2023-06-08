@@ -9,7 +9,7 @@ class Engine():
         self.rMax = 180
         self.frictionHalfLife = 0.04
         self.frictionFactor = math.pow(0.5, self.dt / self.frictionHalfLife)
-
+        self.forceFactor = 1
         # Canvas
         self.particleCanvas = particle_canvas
     
@@ -38,7 +38,7 @@ class Engine():
                 r = math.sqrt(rx**2 + ry**2)
                 # check if distance is greater than 0 and less than rMax
                 if ((r > 0) & (r < self.rMax)):
-                    f = self.force((r / self.rMax), self.particleCanvas.attractionMatrix[otherPrtcl.color.index(otherPrtcl.color)][prtcl.color.index(prtcl.color)])
+                    f = self.forceFactor * self.force((r / self.rMax), self.particleCanvas.attractionMatrix[otherPrtcl.color.index(otherPrtcl.color)][prtcl.color.index(prtcl.color)])
                     totalForceX += f * rx / r
                     totalForceY += f * ry / r
 
