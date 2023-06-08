@@ -1,66 +1,58 @@
-from tkinter import Tk, Frame, Canvas
-import random
-import particle
-import globals
+from tkinter import Tk, Canvas
+import particle_canvas
 
 class Window():
-
-    window=Tk()
-    window.title('Particle Life')
     
-    def __init__(self):
+    def __init__(self, particle_canvas, title='Particle Life', size = {'Width': 1200, 'Height': 1200}, background='black'):
+        self.size = size
+        self.title = title
+        self.backgrond = background
+
+        # Create window
+        self.window=Tk()
+        self.window.title(title)
+
+        # Create canvas 
         global canvas
-        canvas = Canvas(width=globals.canvasSizeXMax, height=globals.canvasSizeYMax, background='black')
-        canvas.pack()
+        self.canvas = Canvas(width=size['Width'], height=size['Height'], bg=background)
+        self.canvas.pack()
 
-    def genRandomParticles(numParticles, color):
-        colorValue = getattr(globals.Color, color).value
-        
-        particles = []
+        # Particle canvas
+        self.particleCanvas = particle_canvas
 
-        for i in range(numParticles):
-            posX = random.uniform(globals.canvasSizeXMin, globals.canvasSizeXMax)
-            posY = random.uniform(globals.canvasSizeYMin, globals.canvasSizeYMax)
-            particles.append(particle.Particle(posX, posY, colorValue))
-
-        return particles
-
-    def updateParticlePositions():
+    def updateParticlePositions(self):
         object = 1
-        for prtcl in globals.particles:
+        for prtcl in self.particleCanvas.particles:
             
-            if(globals.border):
+            if(self.particleCanvas.border):
                 # revert velocity if particle is out of bounds
                 prtcl.posX += prtcl.velX
-                if prtcl.posX > globals.canvasSizeXMax or prtcl.posX < globals.canvasSizeXMin:
+                if prtcl.posX > self.particleCanvas.canvasSize['Width'] or prtcl.posX < 0:
                     prtcl.posX -= prtcl.velX
 
                 prtcl.posY += prtcl.velY
-                if prtcl.posY > globals.canvasSizeYMax or prtcl.posY < globals.canvasSizeYMin:
+                if prtcl.posY > self.particleCanvas.canvasSize['Height'] or prtcl.posY < 0:
                     prtcl.posY -= prtcl.velY
             else:
                 # wrap particle around canvas if out of bounds
                 prtcl.posX += prtcl.velX
-                if prtcl.posX > globals.canvasSizeXMax:
-                    prtcl.posX = globals.canvasSizeXMin
+                if prtcl.posX > self.particleCanvas.canvasSize['Width']:
+                    prtcl.posX = 0
                 
-                if prtcl.posX < globals.canvasSizeXMin:
-                    prtcl.posX = globals.canvasSizeXMax
+                if prtcl.posX < 0:
+                    prtcl.posX = self.particleCanvas.canvasSize['Width']
 
                 prtcl.posY += prtcl.velY
-                if prtcl.posY > globals.canvasSizeYMax:
-                    prtcl.posY = globals.canvasSizeYMin
+                if prtcl.posY > self.particleCanvas.canvasSize['Height']:
+                    prtcl.posY = 0
 
-                if prtcl.posY < globals.canvasSizeYMin:
-                    prtcl.posY = globals.canvasSizeYMax
+                if prtcl.posY < 0:
+                    prtcl.posY = self.particleCanvas.canvasSize['Height']
 
-            canvas.moveto(object, prtcl.posX, prtcl.posY)
+            self.canvas.moveto(object, prtcl.posX, prtcl.posY)
             object += 1
         
-    def DrawParticles():
-        for i in range(len(globals.Color)):
-            globals.particles.extend(Window.genRandomParticles(150, globals.Color(i).name))
-
-        for prtcl in globals.particles:
-            stringValue = globals.Color(prtcl.color).name
-            canvas.create_oval(prtcl.posX, prtcl.posY, prtcl.posX + prtcl.size, prtcl.posY + prtcl.size, fill=stringValue)
+    def DrawParticles(self):
+        for prtcl in self.particleCanvas.particles:
+            stringValue = prtcl.color
+            self.canvas.create_oval(prtcl.posX, prtcl.posY, prtcl.posX + prtcl.size, prtcl.posY + prtcl.size, fill=stringValue)

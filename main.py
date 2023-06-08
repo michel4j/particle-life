@@ -1,24 +1,22 @@
-import globals
 import engine
 import window
+import particle_canvas
 
-from tkinter import Tk, Frame, Canvas
 import time
 
 def main():
-    global wndw
-    wndw = window.Window()
-    window.Window.DrawParticles()
+    cnvs = particle_canvas.ParticleCanvas(particlesPerColor = 50, colors = ['red', 'green', 'blue', 'orange'], border = False, canvasSize = {'Width': 1200, 'Height': 1200})
+    wndw = window.Window(particle_canvas=cnvs, title='Particle Life', size = {'Width': 1200, 'Height': 1200}, background='black')
+    eng = engine.Engine(cnvs)
+    wndw.DrawParticles()
 
     while True:
-        update()
+        eng.updateParticleVelocities()
+        wndw.updateParticlePositions()
         wndw.window.update_idletasks()
         wndw.window.update()
-        time.sleep(globals.dt)
+        time.sleep(eng.dt)
     
-def update():
-    engine.Engine.updateParticleVelocities()
-    window.Window.updateParticlePositions()
 
 if __name__ == '__main__':
     main()
