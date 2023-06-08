@@ -19,10 +19,16 @@ class Window():
         self.fps_label = Label(self.canvas, text = "FPS: 000", font=('serif', 10, 'bold'))
         self.fps_label.config(bg='black', fg='white')
         self.fps_label.pack()
-        self.canvas.create_window(32, 13, window=self.fps_label)
+        self.canvas.create_window(32, 30, window=self.fps_label)
 
         # Particle canvas
         self.particleCanvas = particle_canvas
+
+        # Create particle count text
+        self.particle_count_label = Label(self.canvas, text = "Particles: " + str(len(self.particleCanvas.particles)), font=('serif', 10, 'bold'))
+        self.particle_count_label.config(bg='black', fg='white')
+        self.particle_count_label.pack()
+        self.canvas.create_window(47, 13, window=self.particle_count_label)
 
     def updateFPS(self, fps):
         if fps < 10:
@@ -33,7 +39,7 @@ class Window():
             self.fps_label.config(text="FPS: " + str(fps))
     
     def updateParticlePositions(self):
-        object = 2 # 1 is fps text
+        object = 3 # 1 is fps tex, 2 is particle count text
         for prtcl in self.particleCanvas.particles:
             
             if(self.particleCanvas.border):
