@@ -38,7 +38,7 @@ class Engine():
                 r = math.sqrt(rx**2 + ry**2)
                 # check if distance is greater than 0 and less than rMax
                 if ((r > 0) & (r < self.rMax)):
-                    f = self.force((r / self.rMax), self.particleCanvas.attractionMatrix[otherPrtcl.color.index(otherPrtcl.color)][prtcl.color.index(prtcl.color)])
+                    f = self.force((r / self.rMax), self.particleCanvas.attractionMatrix[self.particleCanvas.colors.index(otherPrtcl.color)][self.particleCanvas.colors.index(prtcl.color)])
                     totalForceX += f * rx / r
                     totalForceY += f * ry / r
 
