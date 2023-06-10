@@ -35,6 +35,12 @@ class Engine():
                 # calculte distance between particles
                 rx =  otherPrtcl.posX - prtcl.posX
                 ry =  otherPrtcl.posY - prtcl.posY
+
+                # adjust for screen wrapping
+                if abs(rx) > self.particleCanvas.canvasSize['Width'] / 2:
+                    rx = self.particleCanvas.canvasSize['Width'] - abs(rx)
+                if abs(ry) > self.particleCanvas.canvasSize['Height'] / 2:
+                    ry = self.particleCanvas.canvasSize['Height'] - abs(ry)
                 r = math.sqrt(rx**2 + ry**2)
                 # check if distance is greater than 0 and less than rMax
                 if ((r > 0) & (r < self.rMax)):
