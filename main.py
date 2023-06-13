@@ -18,10 +18,20 @@ def main():
     counter = 0
 
     while True:
+        begin = time.time()
+
         eng.updateParticleVelocities()
+        time_elapsed = time.time() - begin
+        print("1. calculate forces between particles:  " + str(time_elapsed) + " seconds")
+
         wndw.updateParticlePositions()
+        time_elapsed = time.time() - time_elapsed - begin
+        print("2. move particles: \t\t\t" + str(time_elapsed) + " seconds")
+ 
         wndw.window.update_idletasks()
         wndw.window.update()
+        time_elapsed = time.time() - time_elapsed - begin
+        print("3. update window:\t\t\t" + str(time_elapsed) + " seconds\n")
         
         # FPS counter
         counter+=1
@@ -29,6 +39,18 @@ def main():
             wndw.updateFPS(round(counter / (time.time() - start_time)))
             counter = 0
             start_time = time.time()
+        
+        # FPS limit to 60
+        cycle = time.time() - begin
+        print("cycle time: " + str(cycle))
+        if (time.time() - begin) < 0.01666: # 60is fps
+            delay = (0.01666 - (time.time() - begin)) / 2  # dont ask why dividing by 2 solves the problem. Sleep is not accurate
+            print("Delay: " + str(delay))
+            print("Combined time: " + str(delay + cycle))
+            time.sleep(delay)
+
+        actual_total_time = time.time() - begin
+        print("Total time per loop: " + str(actual_total_time) + "\n\n")
     
 
 if __name__ == '__main__':

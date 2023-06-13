@@ -25,10 +25,19 @@ class Window():
         self.particleCanvas = particle_canvas
 
         # Create particle count text
-        self.particle_count_label = Label(self.canvas, text = "Particles: " + str(len(self.particleCanvas.particles)), font=('serif', 10, 'bold'))
+        number_of_particles = len(self.particleCanvas.particles)
+        if number_of_particles < 10:
+            particle_text = "Particles: 000" + str(number_of_particles)
+        elif number_of_particles < 100:
+            particle_text = "Particles: 00" + str(number_of_particles)
+        elif number_of_particles < 1000:
+            particle_text = "Particles: 0" + str(number_of_particles)
+        else:
+            particle_text = "Particles: " + str(number_of_particles)
+        self.particle_count_label = Label(self.canvas, text = particle_text, font=('serif', 10, 'bold'))
         self.particle_count_label.config(bg='black', fg='white')
         self.particle_count_label.pack()
-        self.canvas.create_window(47, 13, window=self.particle_count_label)
+        self.canvas.create_window(50, 13, window=self.particle_count_label)
 
     def updateFPS(self, fps):
         if fps < 10:
