@@ -3,12 +3,15 @@ import window
 import particle_canvas
 
 import time
-
-
+def sleep(duration, get_now=time.perf_counter):
+    now = get_now()
+    end = now + duration
+    while now < end:
+        now = get_now()
 
 def main():
     # Create particle_canvas, window and engine objects
-    cnvs = particle_canvas.ParticleCanvas(particlesPerColor = 50, colors = ['red', 'green', 'blue', 'orange'], border = False, canvasSize = {'Width': 1200, 'Height': 1200})
+    cnvs = particle_canvas.ParticleCanvas(particlesPerColor = 1, colors = ['red', 'green', 'blue', 'orange'], border = False, canvasSize = {'Width': 1200, 'Height': 1200})
     wndw = window.Window(particle_canvas=cnvs, title='Particle Life', size = {'Width': 1200, 'Height': 1200}, background='black')
     eng = engine.Engine(cnvs)
     wndw.DrawParticles()
@@ -41,13 +44,13 @@ def main():
             start_time = time.time()
         
         # FPS limit to 60
-        cycle = time.time() - begin
-        print("cycle time: " + str(cycle))
-        if (time.time() - begin) < 0.01666: # 60is fps
-            delay = (0.01666 - (time.time() - begin)) / 2  # dont ask why dividing by 2 solves the problem. Sleep is not accurate
+        cycle_time = time.time() - begin
+        print("cycle time: " + str(cycle_time))
+        if cycle_time < 0.015: # 60is fps
+            delay = (0.01666 - (time.time() - begin)) / 1.2 # dont ask why dividing by 2 solves the problem. Sleep is not accurate
             print("Delay: " + str(delay))
-            print("Combined time: " + str(delay + cycle))
-            time.sleep(delay)
+            print("Combined time: " + str(delay + cycle_time))
+            sleep(delay)
 
         actual_total_time = time.time() - begin
         print("Total time per loop: " + str(actual_total_time) + "\n\n")
@@ -55,3 +58,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
