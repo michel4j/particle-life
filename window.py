@@ -1,4 +1,4 @@
-from tkinter import Tk, Canvas, Label, StringVar
+from tkinter import Tk, Canvas, Label
 
 class Window():
     
@@ -48,9 +48,9 @@ class Window():
             self.fps_label.config(text="FPS: " + str(fps))
     
     def updateParticlePositions(self):
-        object = 3 # 1 is fps tex, 2 is particle count text
         for prtcl in self.particleCanvas.particles:
-            
+            dynamicObject = self.particleCanvas.particles.index(prtcl) + 3 # 1 is fps text, 2 is particle count text
+
             if(self.particleCanvas.border):
                 # revert velocity if particle is out of bounds
                 prtcl.posX += prtcl.velX
@@ -76,8 +76,7 @@ class Window():
                 if prtcl.posY < 0:
                     prtcl.posY = self.particleCanvas.canvasSize['Height']
 
-            self.canvas.moveto(object, prtcl.posX, prtcl.posY)
-            object += 1
+            self.canvas.moveto(dynamicObject, prtcl.posX, prtcl.posY)
         
     def DrawParticles(self):
         for prtcl in self.particleCanvas.particles:
