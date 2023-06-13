@@ -11,7 +11,7 @@ def sleep(duration, get_now=time.perf_counter):
 
 def main():
     # Create particle_canvas, window and engine objects
-    cnvs = particle_canvas.ParticleCanvas(particlesPerColor = 1, colors = ['red', 'green', 'blue', 'orange'], border = False, canvasSize = {'Width': 1200, 'Height': 1200})
+    cnvs = particle_canvas.ParticleCanvas(particlesPerColor = 1000, colors = ['red', 'green', 'blue', 'orange'], border = False, canvasSize = {'Width': 1200, 'Height': 1200})
     wndw = window.Window(particle_canvas=cnvs, title='Particle Life', size = {'Width': 1200, 'Height': 1200}, background='black')
     eng = engine.Engine(cnvs)
     wndw.DrawParticles()
@@ -23,18 +23,18 @@ def main():
     while True:
         begin = time.time()
 
-        eng.updateParticleVelocities()
-        time_elapsed = time.time() - begin
-        print("1. calculate forces between particles:  " + str(time_elapsed) + " seconds")
+        #eng.updateParticleVelocities()
+        time_elapsed_force = time.time() - begin
+        print("calculate forces between particles:\t" + str(time_elapsed_force) + " seconds")
 
         wndw.updateParticlePositions()
-        time_elapsed = time.time() - time_elapsed - begin
-        print("2. move particles: \t\t\t" + str(time_elapsed) + " seconds")
+        time_elapsed_move = time.time() - time_elapsed_force - begin
+        print("move particles: \t\t\t" + str(time_elapsed_move) + " seconds")
  
         wndw.window.update_idletasks()
         wndw.window.update()
-        time_elapsed = time.time() - time_elapsed - begin
-        print("3. update window:\t\t\t" + str(time_elapsed) + " seconds\n")
+        time_elapsed_update = time.time() - time_elapsed_force - time_elapsed_move - begin
+        print("update window:\t\t\t\t" + str(time_elapsed_update) + " seconds")
         
         # FPS counter
         counter+=1
@@ -45,15 +45,15 @@ def main():
         
         # FPS limit to 60
         cycle_time = time.time() - begin
-        print("cycle time: " + str(cycle_time))
+        print("=cycle time:\t\t\t\t" + str(cycle_time) + " seconds")
         if cycle_time < 0.015: # 60is fps
-            delay = (0.01666 - (time.time() - begin)) / 1.2 # dont ask why dividing by 2 solves the problem. Sleep is not accurate
-            print("Delay: " + str(delay))
-            print("Combined time: " + str(delay + cycle_time))
+            delay = (0.01666 - (time.time() - begin)) # dont ask why dividing by 1.2 solves the problem
+            print("added delay of:\t\t\t\t" + str(delay) + " seconds")
             sleep(delay)
 
         actual_total_time = time.time() - begin
-        print("Total time per loop: " + str(actual_total_time) + "\n\n")
+        print("\nTotal time per loop:\t\t\t" + str(actual_total_time) + " seconds")
+        print("FPS:\t\t\t\t\t" + str(round(1 / actual_total_time)) + "\n\n")
     
 
 if __name__ == '__main__':
