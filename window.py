@@ -1,6 +1,6 @@
 import pyglet
 import color_to_RGB
-from multiprocessing.pool import ThreadPool
+from multiprocessing import Pool
 
 class Window():
     
@@ -11,7 +11,7 @@ class Window():
         # Create window
         self.window = pyglet.window.Window(size['Width'], size['Height'], self.title)
         self.batch = pyglet.graphics.Batch()
-        self.objects = []
+        self.objects = {}
 
         # Particle canvas
         self.particleCanvas = particle_canvas
@@ -40,7 +40,9 @@ class Window():
         # Draw all particles
         for prtcl in self.particleCanvas.particles:
             temp = pyglet.shapes.Circle(x=prtcl.posX, y=prtcl.posY, radius=prtcl.size, color=color_to_RGB.transform(prtcl.color), batch=self.batch)
-            self.objects.append(temp)
+            self.objects[prtcl] = temp
+
+
 
     def updateFPS(self, fps):
         if fps < 10:
@@ -50,20 +52,11 @@ class Window():
         else:
             self.fps_label.text = "FPS: " + str(fps)
 
-    def updateObjectPositions(self):
-        """ Call updateObjectPosition for each particle 
-            using multithreading"""	
-        with ThreadPool() as pool:
-            result = pool.starmap_async(self.updateObjectPosition, self.particleCanvas.particles)
-            result.wait()
-    
-    def updateObjectPosition(self, prtcl):
-        """ Update particle position in pyglet window and particle canvas """	
-        objectIndex = self.particleCanvas.particles.index(prtcl)
+    def updateObjectPositions(self):	
+        for prtcl in self.particleCanvas.particles:
+            # Update particle position in particle canvas
+            self.particleCanvas.updateParticlePosition(prtcl)
 
-        # Update particle position in particle canvas
-        self.particleCanvas.updateParticlePosition(prtcl)
-
-        # Update particle position in pyglet window
-        self.objects[objectIndex].x = prtcl.posX
-        self.objects[objectIndex].y = prtcl.posY
+            # Update particle position in pyglet window
+            # self.objects[prtcl].x = prtcl.posX
+            # self.objects[prtcl].y = prtcl.posY
