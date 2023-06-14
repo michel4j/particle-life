@@ -36,6 +36,32 @@ class ParticleCanvas():
                 matrix[i][j] = random.uniform(-1, 1)
         return matrix
     
+    def updateParticlePosition(self, prtcl):
+        """ Update particle position based on velocity """
+        if(self.border):
+            # revert velocity if particle is out of bounds
+            prtcl.posX += prtcl.velX
+            if prtcl.posX > self.canvasSize['Width'] or prtcl.posX < 0:
+                prtcl.posX -= prtcl.velX
+
+            prtcl.posY += prtcl.velY
+            if prtcl.posY > self.canvasSize['Height'] or prtcl.posY < 0:
+                prtcl.posY -= prtcl.velY
+        else:
+            # wrap particle around canvas if out of bounds
+            prtcl.posX += prtcl.velX
+            if prtcl.posX > self.canvasSize['Width']:
+                prtcl.posX = 0
+            
+            if prtcl.posX < 0:
+                prtcl.posX = self.canvasSize['Width']
+
+            prtcl.posY += prtcl.velY
+            if prtcl.posY > self.canvasSize['Height']:
+                prtcl.posY = 0
+
+            if prtcl.posY < 0:
+                prtcl.posY = self.canvasSize['Height']
 
     def returnExampleAttractionMatrices(self, matrixNumber):
         """ Returns example attraction matrices """

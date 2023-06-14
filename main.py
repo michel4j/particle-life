@@ -4,24 +4,23 @@ import window
 import engine
 import time
 
-cnvs = particle_canvas.ParticleCanvas(particlesPerColor = 25, colors = ['red', 'green', 'blue', 'orange'], border = False, canvasSize = {'Width': 1000, 'Height': 1000})
+cnvs = particle_canvas.ParticleCanvas(particlesPerColor = 2500, colors = ['red', 'green', 'blue', 'orange'], border = False, canvasSize = {'Width': 1000, 'Height': 1000})
 wndw = window.Window(particle_canvas=cnvs, title='Particle Life', size = {'Width': cnvs.canvasSize['Width'], 'Height': cnvs.canvasSize['Height']})
 eng = engine.Engine(cnvs)
 
 def update(dt):
-    global begin
     begin = time.time()
     
     # Clear window
     wndw.window.clear()
 
     # Update particle velocities
-    eng.updateParticleVelocities()
+    #eng.updateParticleVelocities()
     time_elapsed_force = time.time() - begin
     print("1. Calculate forces between particles:\t" + str(time_elapsed_force) + " seconds")
 
     # Update particle positions
-    wndw.updateParticlePositions()
+    wndw.updateObjectPositions()
     time_elapsed_move = time.time() - time_elapsed_force - begin
     print("2. Adjust particle coordinates: \t" + str(time_elapsed_move) + " seconds")
 
@@ -34,7 +33,7 @@ def update(dt):
     wndw.particle_count_label.draw()
     wndw.fps_label.draw()
 
-    # Total time
+    # Total time & FPS
     cycle_time = time.time() - begin
     print("--------------------------------------------------------------------")
     print("Cycle time:\t\t\t\t" + str(cycle_time) + " seconds")

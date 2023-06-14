@@ -1,5 +1,6 @@
 import pyglet
 import color_to_RGB
+from multiprocessing.pool import ThreadPool
 
 class Window():
     
@@ -49,34 +50,20 @@ class Window():
         else:
             self.fps_label.text = "FPS: " + str(fps)
 
-    def updateParticlePositions(self):
-        for prtcl in self.particleCanvas.particles:
-            dynamicObject = self.particleCanvas.particles.index(prtcl)
+    def updateObjectPositions(self):
+        """ Call updateObjectPosition for each particle 
+            using multithreading"""	
+        with ThreadPool() as pool:
+            result = pool.starmap_async(self.updateObjectPosition, self.particleCanvas.particles)
+            result.wait()
+    
+    def updateObjectPosition(self, prtcl):
+        """ Update particle position in pyglet window and particle canvas """	
+        objectIndex = self.particleCanvas.particles.index(prtcl)
 
-            if(self.particleCanvas.border):
-                # revert velocity if particle is out of bounds
-                prtcl.posX += prtcl.velX
-                if prtcl.posX > self.particleCanvas.canvasSize['Width'] or prtcl.posX < 0:
-                    prtcl.posX -= prtcl.velX
+        # Update particle position in particle canvas
+        self.particleCanvas.updateParticlePosition(prtcl)
 
-                prtcl.posY += prtcl.velY
-                if prtcl.posY > self.particleCanvas.canvasSize['Height'] or prtcl.posY < 0:
-                    prtcl.posY -= prtcl.velY
-            else:
-                # wrap particle around canvas if out of bounds
-                prtcl.posX += prtcl.velX
-                if prtcl.posX > self.particleCanvas.canvasSize['Width']:
-                    prtcl.posX = 0
-                
-                if prtcl.posX < 0:
-                    prtcl.posX = self.particleCanvas.canvasSize['Width']
-
-                prtcl.posY += prtcl.velY
-                if prtcl.posY > self.particleCanvas.canvasSize['Height']:
-                    prtcl.posY = 0
-
-                if prtcl.posY < 0:
-                    prtcl.posY = self.particleCanvas.canvasSize['Height']
-
-            self.objects[dynamicObject].x = prtcl.posX
-            self.objects[dynamicObject].y = prtcl.posY
+        # Update particle position in pyglet window
+        self.objects[objectIndex].x = prtcl.posX
+        self.objects[objectIndex].y = prtcl.posY
