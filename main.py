@@ -1,11 +1,11 @@
 import pyglet
 import particle_canvas
-import pyglet_window
+import window
 import engine
 import time
 
 cnvs = particle_canvas.ParticleCanvas(particlesPerColor = 25, colors = ['red', 'green', 'blue', 'orange'], border = False, canvasSize = {'Width': 1000, 'Height': 1000})
-wndw = pyglet_window.Window(particle_canvas=cnvs, title='Particle Life', size = {'Width': cnvs.canvasSize['Width'], 'Height': cnvs.canvasSize['Height']})
+wndw = window.Window(particle_canvas=cnvs, title='Particle Life', size = {'Width': cnvs.canvasSize['Width'], 'Height': cnvs.canvasSize['Height']})
 eng = engine.Engine(cnvs)
 
 def update(dt):
@@ -43,4 +43,5 @@ def update(dt):
 
 pyglet.clock.schedule_interval(update, 1/120.0)
 
-pyglet.app.run()
+if __name__ == "__main__":
+    pyglet.app.run()
