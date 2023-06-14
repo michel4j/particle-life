@@ -12,13 +12,16 @@ class Window():
         self.batch = pyglet.graphics.Batch()
         self.objects = []
 
-        # Create FPS text
-        self.fps_display = pyglet.window.FPSDisplay(window=self.window)
-
-        # # Particle canvas
+        # Particle canvas
         self.particleCanvas = particle_canvas
 
         # Create FPS text
+        self.fps_label = pyglet.text.Label("FPS: 000",
+                        font_size=10,
+                        x=28, y=self.window.height - 23,
+                        anchor_x='center', anchor_y='center')
+
+        # Create number of particles text
         number_of_particles = len(self.particleCanvas.particles)
         if number_of_particles < 10:
             particle_text = "Particles: 000" + str(number_of_particles)
@@ -30,13 +33,21 @@ class Window():
             particle_text = "Particles: " + str(number_of_particles)
         self.particle_count_label = pyglet.text.Label(particle_text,
                         font_size=10,
-                        x=48, y=self.window.height - 7,
+                        x=45, y=self.window.height - 7,
                         anchor_x='center', anchor_y='center')
 
         # Draw all particles
         for prtcl in self.particleCanvas.particles:
             temp = pyglet.shapes.Circle(x=prtcl.posX, y=prtcl.posY, radius=prtcl.size, color=color_to_RGB.transform(prtcl.color), batch=self.batch)
             self.objects.append(temp)
+
+    def updateFPS(self, fps):
+        if fps < 10:
+            self.fps_label.text = "FPS: 00" + str(fps)
+        elif fps < 100:
+            self.fps_label.text = "FPS: 0" + str(fps)
+        else:
+            self.fps_label.text = "FPS: " + str(fps)
 
     def updateParticlePositions(self):
         for prtcl in self.particleCanvas.particles:

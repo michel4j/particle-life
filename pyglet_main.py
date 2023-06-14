@@ -2,23 +2,45 @@ import pyglet
 import particle_canvas
 import pyglet_window
 import engine
+import time
 
-cnvs = particle_canvas.ParticleCanvas(particlesPerColor = 20, colors = ['red', 'green', 'blue', 'orange'], border = False, canvasSize = {'Width': 1200, 'Height': 1200})
-wndw = pyglet_window.Window(particle_canvas=cnvs, title='Particle Life', size = {'Width': 1200, 'Height': 1200})
+cnvs = particle_canvas.ParticleCanvas(particlesPerColor = 25, colors = ['red', 'green', 'blue', 'orange'], border = False, canvasSize = {'Width': 1000, 'Height': 1000})
+wndw = pyglet_window.Window(particle_canvas=cnvs, title='Particle Life', size = {'Width': cnvs.canvasSize['Width'], 'Height': cnvs.canvasSize['Height']})
 eng = engine.Engine(cnvs)
 
-@wndw.window.event
-def on_draw():
-    wndw.window.clear()
-    wndw.particle_count_label.draw()
-    wndw.batch.draw()
-    wndw.fps_display.draw()
-
-
 def update(dt):
-    eng.updateParticleVelocities()
-    wndw.updateParticlePositions()
+    global begin
+    begin = time.time()
+    
+    # Clear window
+    wndw.window.clear()
 
-pyglet.clock.schedule_interval(update, 1/60.0)
+    # Update particle velocities
+    eng.updateParticleVelocities()
+    time_elapsed_force = time.time() - begin
+    print("1. Calculate forces between particles:\t" + str(time_elapsed_force) + " seconds")
+
+    # Update particle positions
+    wndw.updateParticlePositions()
+    time_elapsed_move = time.time() - time_elapsed_force - begin
+    print("2. Adjust particle coordinates: \t" + str(time_elapsed_move) + " seconds")
+
+    # Render particles
+    wndw.batch.draw()
+    time_elapsed_update = time.time() - time_elapsed_force - time_elapsed_move - begin
+    print("3. Update window and render window:\t" + str(time_elapsed_update) + " seconds")
+    
+    # Draw text
+    wndw.particle_count_label.draw()
+    wndw.fps_label.draw()
+
+    # Total time
+    cycle_time = time.time() - begin
+    print("--------------------------------------------------------------------")
+    print("Cycle time:\t\t\t\t" + str(cycle_time) + " seconds")
+    wndw.updateFPS(round(1 / cycle_time))
+    print("FPS:\t\t\t\t\t" + str(round(1 / cycle_time)) + "\n\n")
+
+pyglet.clock.schedule_interval(update, 1/120.0)
 
 pyglet.app.run()
