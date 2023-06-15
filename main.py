@@ -4,7 +4,7 @@ import window
 import engine
 import time
 
-cnvs = particle_canvas.ParticleCanvas(particlesPerColor = 5000, colors = ['red', 'green', 'blue', 'orange'], border = False, canvasSize = {'Width': 1000, 'Height': 1000})
+cnvs = particle_canvas.ParticleCanvas(particlesPerColor = 25, colors = ['red', 'green', 'blue', 'orange'], border = False, canvasSize = {'Width': 1000, 'Height': 1000})
 wndw = window.Window(particle_canvas=cnvs, title='Particle Life', size = {'Width': cnvs.canvasSize['Width'], 'Height': cnvs.canvasSize['Height']})
 eng = engine.Engine(cnvs)
 
@@ -15,7 +15,7 @@ def update(dt):
     wndw.window.clear()
 
     # Update particle velocities
-    #eng.updateParticleVelocities()
+    eng.updateParticleVelocities()
     time_elapsed_force = time.time() - begin
     print("1. Calculate forces between particles:\t" + str(time_elapsed_force) + " seconds")
 

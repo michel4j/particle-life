@@ -40,13 +40,16 @@ class Window():
                         x=54, y=self.window.height - 7,
                         anchor_x='center', anchor_y='center')
 
-        # Create vertex list for particles
+        # Create vertex list for particles -> quads
         vertices = []
         colors = []
         for prtcl in self.particleCanvas.particles:
-            vertices.extend([prtcl.posX, prtcl.posY])
-            colors.extend(color_to_RGB.transform(prtcl.color))
-        self.vertex_list = self.batch.add(len(self.particleCanvas.particles), pyglet.gl.GL_POINTS, None,
+            vertices.extend([prtcl.posX  , prtcl.posY  ,
+                             prtcl.posX  , prtcl.posY+2,
+                             prtcl.posX+2, prtcl.posY+2,
+                             prtcl.posX+2, prtcl.posY   ])
+            colors.extend(color_to_RGB.transform(prtcl.color) * 4)
+        self.vertex_list = self.batch.add(len(self.particleCanvas.particles) * 4, pyglet.gl.GL_QUADS, None,
                                                        ('v2f', vertices),
                                                        ('c3B', colors),)  
 
@@ -65,6 +68,9 @@ class Window():
             self.particleCanvas.updateParticlePosition(prtcl)
 
             # Update particle position in pyglet window
-            vertices.extend([prtcl.posX, prtcl.posY])
 
+            vertices.extend([prtcl.posX  , prtcl.posY  ,
+                             prtcl.posX  , prtcl.posY+2,
+                             prtcl.posX+2, prtcl.posY+2,
+                             prtcl.posX+2, prtcl.posY   ])
         self.vertex_list.vertices = vertices
