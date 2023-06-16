@@ -15,6 +15,10 @@ class ParticleCanvas():
         self.particles = self.generateRandomParticles()
         self.attractionMatrix = self.generateRandomAttractionMatrix()
 
+    def update(self):
+        """ Update particle canvas """
+        self.updateParticlePositions()
+    
     def generateRandomParticles(self):      
         """ Generate random particles for each color.
             Returns list of generatd particles""" 
@@ -37,6 +41,11 @@ class ParticleCanvas():
                 matrix[i][j] = random.uniform(-1, 1)
         return matrix
     
+    def updateParticlePositions(self):
+        """ Update particle positions """
+        for prtcl in self.particles:
+            self.updateParticlePosition(prtcl)
+
     def updateParticlePosition(self, prtcl):
         """ Update particle position based on velocity """
         if(self.canvas_border):

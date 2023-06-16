@@ -29,6 +29,19 @@ class Window():
                         anchor_x='center', anchor_y='center')
 
         # Create vertex list for particles -> quads
+        vertices, colors = self.createVertexList()
+        self.vertex_list = self.batch.add(len(self.particle_canvas.particles) * 4, pyglet.gl.GL_QUADS, None,
+                                                       ('v2f', vertices),
+                                                       ('c3B', colors),)  
+    
+    def update(self):
+        """ Update window """
+        self.updateObjectPositions()
+        
+
+    def createVertexList(self, color=True):
+        """ Create vertex list for particles. 
+        Option to also create color list """	
         vertices = []
         colors = []
         for prtcl in self.particle_canvas.particles:
@@ -36,12 +49,16 @@ class Window():
                              prtcl.posX                                     , prtcl.posY +self.particle_canvas.particle_size,
                              prtcl.posX +self.particle_canvas.particle_size , prtcl.posY +self.particle_canvas.particle_size,
                              prtcl.posX +self.particle_canvas.particle_size , prtcl.posY                                    ])
-            colors.extend(color_to_RGB.transform(prtcl.color) * 4)
-        self.vertex_list = self.batch.add(len(self.particle_canvas.particles) * 4, pyglet.gl.GL_QUADS, None,
-                                                       ('v2f', vertices),
-                                                       ('c3B', colors),)  
+            if(color):
+                colors.extend(color_to_RGB.transform(prtcl.color) * 4)
+        
+        if(color):
+            return vertices, colors
+        else:
+            return vertices
 
     def numberOfParticlesText(self):
+        """ Returns text for number of particles label """	
         number_of_particles = len(self.particle_canvas.particles)
         if number_of_particles < 10:
             return "Particles: 0000" + str(number_of_particles)
@@ -53,8 +70,9 @@ class Window():
             return "Particles: 0" + str(number_of_particles)
         else:
             return "Particles: " + str(number_of_particles)
-
+    
     def updateFPS(self, fps):
+        """ Update FPS label """	
         if fps < 10:
             self.fps_label.text = "FPS: 00" + str(fps)
         elif fps < 100:
@@ -63,15 +81,5 @@ class Window():
             self.fps_label.text = "FPS: " + str(fps)
 
     def updateObjectPositions(self):	
-        vertices = []
-        for prtcl in self.particle_canvas.particles:
-            # Update particle position in particle canvas
-            self.particle_canvas.updateParticlePosition(prtcl)
-
-            # Update particle position in pyglet window
-
-            vertices.extend([prtcl.posX                                     , prtcl.posY                                    ,
-                             prtcl.posX                                     , prtcl.posY +self.particle_canvas.particle_size,
-                             prtcl.posX +self.particle_canvas.particle_size , prtcl.posY +self.particle_canvas.particle_size,
-                             prtcl.posX +self.particle_canvas.particle_size , prtcl.posY                                    ])
-        self.vertex_list.vertices = vertices
+        """ Update vertex list for particles """
+        self.vertex_list.vertices = self.createVertexList(color=False)

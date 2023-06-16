@@ -25,11 +25,12 @@ def update(dt):
     print("1. Calculate forces between particles:\t" + str(time_elapsed_force) + " seconds")
 
     # Update particle positions
-    wndw.updateObjectPositions()
+    cnvs.update()
     time_elapsed_move = time.time() - time_elapsed_force - begin
     print("2. Adjust particle coordinates: \t" + str(time_elapsed_move) + " seconds")
 
     # Render particles
+    wndw.update()
     wndw.batch.draw()
     time_elapsed_update = time.time() - time_elapsed_force - time_elapsed_move - begin
     print("3. Update window and render window:\t" + str(time_elapsed_update) + " seconds")
