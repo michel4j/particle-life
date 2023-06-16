@@ -6,11 +6,11 @@ import time
 
 debug_state = True
 
-cnvs = particle_canvas.ParticleCanvas(particles_per_color = 30, 
+cnvs = particle_canvas.ParticleCanvas(particles_per_color = 2, 
                                       particle_colors = ['red', 'green', 'blue', 'orange'], 
                                       particle_size = 2, 
                                       canvas_border = False, 
-                                      canvas_size = {'Width': 1000, 'Height': 1000},
+                                      canvas_size = {'Width': 1200, 'Height': 1200},
                                       debug = debug_state)
 
 wndw = window.Window(particle_canvas = cnvs, 
