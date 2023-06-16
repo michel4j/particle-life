@@ -35,21 +35,29 @@ def game_loop(self):
     wndw.update()
 
     # Total time & FPS
+    global cycle_time
     cycle_time = (time.time_ns()  / (10 ** 9)) - begin
     if debug_state:
         print("--------------------------------------------------------------------")
         print("Cycle time:\t\t\t\t\t" + str(cycle_time) + " seconds")
     
     # Prevent division by zero
-    if cycle_time == 0:
-        wndw.updateFPS(round(1 / 0.01666))
-        if debug_state:
+    if debug_state:
+        if cycle_time == 0:
             print("FPS:\t\t\t\t\t\t" + str(round(1 / 0.01666)) + "\n\n")
-    else:
-        wndw.updateFPS(round(1 / cycle_time))
-        if debug_state:
+        else:
             print("FPS:\t\t\t\t\t\t" + str(round(1 / cycle_time)) + "\n\n")
 
+def update_FPS_label(self):
+    # Prevent division by zero
+    if cycle_time == 0:
+        fps = round(1 / 0.01666)
+    else:
+        fps = round(1 / cycle_time)
+
+    wndw.updateFPS(fps)
+
 if __name__ == "__main__":
-    pyglet.clock.schedule_interval(game_loop, 1/60.0)
+    pyglet.clock.schedule_interval(game_loop, 1/60.0) # update game loop 60 times per second
+    pyglet.clock.schedule_interval(update_FPS_label, 1) # update FPS label every second
     pyglet.app.run()
