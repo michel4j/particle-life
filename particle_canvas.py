@@ -1,9 +1,16 @@
 import random
 import particle
+import time
 
 class ParticleCanvas():
     
-    def __init__(self, particles_per_color = 50, colors = ['red', 'green', 'blue'], canvas_border = False, particle_size = 2, canvas_size = {'Width': 1200, 'Height': 1200}):
+    def __init__(self, 
+                 particles_per_color = 50, 
+                 colors = ['red', 'green', 'blue'], 
+                 canvas_border = False, 
+                 particle_size = 2, 
+                 canvas_size = {'Width': 1200, 'Height': 1200}, 
+                 debug = False):
         # Canvas
         self.canvas_border = canvas_border
         self.canvas_size = canvas_size
@@ -15,9 +22,17 @@ class ParticleCanvas():
         self.particles = self.generateRandomParticles()
         self.attractionMatrix = self.generateRandomAttractionMatrix()
 
+        self.debug = debug
+
     def update(self):
         """ Update particle canvas """
+        if(self.debug):
+            begin = time.time_ns()  / (10 ** 9)
+
         self.updateParticlePositions()
+
+        if(self.debug):
+            print("2. Adjust particle coordinates on canvas: \t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
     
     def generateRandomParticles(self):      
         """ Generate random particles for each color.

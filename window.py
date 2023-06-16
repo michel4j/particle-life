@@ -1,9 +1,10 @@
 import pyglet
 import color_to_RGB
+import time
 
 class Window():
     
-    def __init__(self, particle_canvas, title='Particle Life'):
+    def __init__(self, particle_canvas, title='Particle Life', debug = False):
         # Create window
         self.window_size = {'Width': particle_canvas.canvas_size['Width'], 'Height': particle_canvas.canvas_size['Height']}
         self.title = title
@@ -12,6 +13,8 @@ class Window():
         # Pyglet rendering
         self.batch = pyglet.graphics.Batch()
         self.vertex_list = None
+
+        self.debug = debug
 
         # Particle canvas
         self.particle_canvas = particle_canvas
@@ -28,18 +31,28 @@ class Window():
                         x=54, y=self.window.height - 7,
                         anchor_x='center', anchor_y='center')
 
-        # Create vertex list for particles -> quads
-        vertices, colors = self.createVertexList()
+        # Create vertex list for particles(use GL_QUADS)
+        vertices, colors = self.updateVertexList()
         self.vertex_list = self.batch.add(len(self.particle_canvas.particles) * 4, pyglet.gl.GL_QUADS, None,
                                                        ('v2f', vertices),
                                                        ('c3B', colors),)  
     
     def update(self):
         """ Update window """
+        if(self.debug):
+            begin = time.time_ns()  / (10 ** 9)
+        
+        self.window.clear()
         self.updateObjectPositions()
+        self.batch.draw()
+        self.particle_count_label.draw()
+        self.fps_label.draw()
+
+        if(self.debug):
+            print("3. Render pyglet window:\t\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
         
 
-    def createVertexList(self, color=True):
+    def updateVertexList(self, color=True):
         """ Create vertex list for particles. 
         Option to also create color list """	
         vertices = []
@@ -82,4 +95,4 @@ class Window():
 
     def updateObjectPositions(self):	
         """ Update vertex list for particles """
-        self.vertex_list.vertices = self.createVertexList(color=False)
+        self.vertex_list.vertices = self.updateVertexList(color=False)

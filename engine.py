@@ -1,7 +1,8 @@
 import math
+import time
 
 class Engine():
-    def __init__(self, particle_canvas):
+    def __init__(self, particle_canvas, debug = False):
         # Time
         self.dt = 0.02
 
@@ -13,6 +14,19 @@ class Engine():
         
         # Canvas
         self.particleCanvas = particle_canvas
+
+        self.debug = debug
+
+    def update(self):
+        """ Update particle velocities """
+        if(self.debug):
+            begin = time.time_ns()  / (10 ** 9)
+        
+        self.updateParticleVelocities()
+
+        if(self.debug):
+            print("1. Calculate forces between particles:\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
+
     
     # fuck me im not writing this function myself 
     def force(self, r, a):
