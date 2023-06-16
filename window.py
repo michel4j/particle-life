@@ -20,9 +20,9 @@ class Window():
         self.particle_canvas = particle_canvas
 
         # Create FPS label
-        self.fps_label = pyglet.text.Label("FPS: 000",
+        self.fps_label = pyglet.text.Label("FPS: 0000",
                         font_size=10,
-                        x=32, y=self.window.height - 23,
+                        x=36, y=self.window.height - 23,
                         anchor_x='center', anchor_y='center')
 
         # Create number of particles label
@@ -87,8 +87,10 @@ class Window():
     def updateFPS(self, fps):
         """ Update FPS label """	
         if fps < 10:
-            self.fps_label.text = "FPS: 00" + str(fps)
+            self.fps_label.text = "FPS: 000" + str(fps)
         elif fps < 100:
+            self.fps_label.text = "FPS: 00" + str(fps)
+        elif fps < 1000:
             self.fps_label.text = "FPS: 0" + str(fps)
         else:
             self.fps_label.text = "FPS: " + str(fps)

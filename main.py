@@ -6,7 +6,7 @@ import time
 
 debug_state = True
 
-cnvs = particle_canvas.ParticleCanvas(particles_per_color = 200, 
+cnvs = particle_canvas.ParticleCanvas(particles_per_color = 1, 
                                       particle_colors = ['red', 'green', 'blue', 'orange'], 
                                       particle_size = 5, 
                                       canvas_border = False, 
@@ -35,27 +35,24 @@ def game_loop(self):
     wndw.update()
 
     # Calculate cycle time
-    global cycle_time
     cycle_time = (time.time_ns()  / (10 ** 9)) - begin
+
+    # Update FPS when cycle time is not zero
+    global fps
+    if cycle_time != 0:
+        fps = round(1 / cycle_time)
 
     # Print cycle time and FPS
     if debug_state:
         print("--------------------------------------------------------------------")
         print("Cycle time:\t\t\t\t\t" + str(cycle_time) + " seconds")
-        if cycle_time == 0:
-            print("FPS:\t\t\t\t\t\t" + str(round(1 / 0.01666)) + "\n\n")
-        else:
-            print("FPS:\t\t\t\t\t\t" + str(round(1 / cycle_time)) + "\n\n")
+        print("FPS:\t\t\t\t\t\t" + str(fps) + "\n\n")
 
 def update_FPS_label(self):
-    global fps 
-    # Prevent division by zero
-    if cycle_time != 0:
-        fps = round(1 / cycle_time)  
-
     wndw.updateFPS(fps)
 
 if __name__ == "__main__":
     pyglet.clock.schedule_interval(game_loop, 1/60.0) # update game loop 60 times per second
     pyglet.clock.schedule_interval(update_FPS_label, 1) # update FPS label every second
+    fps = 0 # initialize FPS just in case it is not updated in the first second
     pyglet.app.run()
