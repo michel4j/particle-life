@@ -29,7 +29,7 @@ class ParticleCanvas():
         if(self.debug):
             begin = time.time_ns()  / (10 ** 9)
 
-        self.updateParticlePositions()
+        #self.updateParticlePositions()
 
         if(self.debug):
             print("2. Adjust particle coordinates on canvas: \t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
