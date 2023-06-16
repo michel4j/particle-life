@@ -6,9 +6,9 @@ import time
 
 debug_state = True
 
-cnvs = particle_canvas.ParticleCanvas(particles_per_color = 2, 
+cnvs = particle_canvas.ParticleCanvas(particles_per_color = 200, 
                                       particle_colors = ['red', 'green', 'blue', 'orange'], 
-                                      particle_size = 2, 
+                                      particle_size = 5, 
                                       canvas_border = False, 
                                       canvas_size = {'Width': 1200, 'Height': 1200},
                                       debug = debug_state)
@@ -48,11 +48,10 @@ def game_loop(self):
             print("FPS:\t\t\t\t\t\t" + str(round(1 / cycle_time)) + "\n\n")
 
 def update_FPS_label(self):
+    global fps 
     # Prevent division by zero
-    if cycle_time == 0:
-        fps = round(1 / 0.01666)
-    else:
-        fps = round(1 / cycle_time)
+    if cycle_time != 0:
+        fps = round(1 / cycle_time)  
 
     wndw.updateFPS(fps)
 

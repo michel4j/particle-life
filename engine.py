@@ -35,6 +35,7 @@ class Engine():
             begin = time.time_ns()  / (10 ** 9)
         
         self.pyopenclUpdateParticleVelocities()
+        #self.updateParticleVelocities()
 
         if(self.debug):
             print("1. Calculate forces between particles:\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
@@ -69,7 +70,7 @@ class Engine():
             float totalForceY = 0;
 
             float prtclX = positions[gid];
-            float prtclY = positions[numParticles + gid];
+            float prtclY = positions[gid + 1];
             int prtclColorIndex = colors[gid];
 
             for (int i = 0; i < numParticles; i++) {
@@ -77,7 +78,7 @@ class Engine():
                     continue;
 
                 float otherPrtclX = positions[i];
-                float otherPrtclY = positions[numParticles + i];
+                float otherPrtclY = positions[i + 1];
                 int otherPrtclColorIndex = colors[i];
 
                 // Calculate distance between particles
@@ -107,7 +108,7 @@ class Engine():
             totalForceY *= rMax * forceFactor;
 
             float velocityX = velocities[gid];
-            float velocityY = velocities[numParticles + gid];
+            float velocityY = velocities[gid + 1];
 
             velocityX *= frictionFactor;
             velocityY *= frictionFactor;
@@ -116,7 +117,7 @@ class Engine():
             velocityY += totalForceY;
 
             velocities[gid] = velocityX;
-            velocities[numParticles + gid] = velocityY;
+            velocities[gid + 1] = velocityY;
         }
         """
 
