@@ -34,15 +34,14 @@ def game_loop(self):
     # Render pyglet window
     wndw.update()
 
-    # Total time & FPS
+    # Calculate cycle time
     global cycle_time
     cycle_time = (time.time_ns()  / (10 ** 9)) - begin
+
+    # Print cycle time and FPS
     if debug_state:
         print("--------------------------------------------------------------------")
         print("Cycle time:\t\t\t\t\t" + str(cycle_time) + " seconds")
-    
-    # Prevent division by zero
-    if debug_state:
         if cycle_time == 0:
             print("FPS:\t\t\t\t\t\t" + str(round(1 / 0.01666)) + "\n\n")
         else:
