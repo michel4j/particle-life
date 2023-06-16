@@ -1,4 +1,3 @@
-
 def transform(color):
     if color == "red":
         return (255, 0, 0)

@@ -4,8 +4,13 @@ import window
 import engine
 import time
 
-cnvs = particle_canvas.ParticleCanvas(particlesPerColor = 25, colors = ['red', 'green', 'blue', 'orange'], border = False, canvasSize = {'Width': 1000, 'Height': 1000})
-wndw = window.Window(particle_canvas=cnvs, title='Particle Life', size = {'Width': cnvs.canvasSize['Width'], 'Height': cnvs.canvasSize['Height']})
+cnvs = particle_canvas.ParticleCanvas(particles_per_color = 50, 
+                                      colors = ['red', 'green', 'blue', 'orange'], 
+                                      particle_size = 2, 
+                                      canvas_border = False, 
+                                      canvas_size = {'Width': 1000, 'Height': 1000})
+
+wndw = window.Window(particle_canvas=cnvs, title='Particle Life')
 eng = engine.Engine(cnvs)
 
 def update(dt):

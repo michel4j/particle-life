@@ -37,14 +37,17 @@ class Engine():
                 ry =  otherPrtcl.posY - prtcl.posY
 
                 # adjust for screen wrapping
-                if abs(rx) > self.particleCanvas.canvasSize['Width'] / 2:
-                    rx = self.particleCanvas.canvasSize['Width'] - abs(rx)
-                if abs(ry) > self.particleCanvas.canvasSize['Height'] / 2:
-                    ry = self.particleCanvas.canvasSize['Height'] - abs(ry)
+                if abs(rx) > self.particleCanvas.canvas_size['Width'] / 2:
+                    rx = self.particleCanvas.canvas_size['Width'] - abs(rx)
+                if abs(ry) > self.particleCanvas.canvas_size['Height'] / 2:
+                    ry = self.particleCanvas.canvas_size['Height'] - abs(ry)
                 r = math.sqrt(rx**2 + ry**2)
                 # check if distance is greater than 0 and less than rMax
                 if ((r > 0) & (r < self.rMax)):
-                    f = self.force((r / self.rMax), self.particleCanvas.attractionMatrix[self.particleCanvas.colors.index(otherPrtcl.color)][self.particleCanvas.colors.index(prtcl.color)])
+                    f = self.force((r / self.rMax), 
+                                   self.particleCanvas.attractionMatrix
+                                        [self.particleCanvas.colors.index(otherPrtcl.color)]
+                                        [self.particleCanvas.colors.index(prtcl.color)])
                     totalForceX += f * rx / r
                     totalForceY += f * ry / r
 

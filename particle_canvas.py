@@ -3,14 +3,15 @@ import particle
 
 class ParticleCanvas():
     
-    def __init__(self, particlesPerColor = 50, colors = ['red', 'green', 'blue'], border = False, canvasSize = {'Width': 1200, 'Height': 1200}):
+    def __init__(self, particles_per_color = 50, colors = ['red', 'green', 'blue'], canvas_border = False, particle_size = 2, canvas_size = {'Width': 1200, 'Height': 1200}):
         # Canvas
-        self.border = border
-        self.canvasSize = canvasSize
+        self.canvas_border = canvas_border
+        self.canvas_size = canvas_size
 
         # Particles
-        self.particlesPerColor = particlesPerColor
+        self.particles_per_color = particles_per_color
         self.colors = colors
+        self.particle_size = particle_size
         self.particles = self.generateRandomParticles()
         self.attractionMatrix = self.generateRandomAttractionMatrix()
 
@@ -20,9 +21,9 @@ class ParticleCanvas():
         particles = []
 
         for color in self.colors:
-            for i in range(self.particlesPerColor):
-                posX = random.uniform(0, self.canvasSize['Width'])
-                posY = random.uniform(0, self.canvasSize['Height'])
+            for i in range(self.particles_per_color):
+                posX = random.uniform(0, self.canvas_size['Width'])
+                posY = random.uniform(0, self.canvas_size['Height'])
                 particles.append(particle.Particle(posX, posY, color))
 
         return particles
@@ -38,30 +39,30 @@ class ParticleCanvas():
     
     def updateParticlePosition(self, prtcl):
         """ Update particle position based on velocity """
-        if(self.border):
+        if(self.canvas_border):
             # revert velocity if particle is out of bounds
             prtcl.posX += prtcl.velX
-            if prtcl.posX > self.canvasSize['Width'] or prtcl.posX < 0:
+            if prtcl.posX > self.canvas_size['Width'] or prtcl.posX < 0:
                 prtcl.posX -= prtcl.velX
 
             prtcl.posY += prtcl.velY
-            if prtcl.posY > self.canvasSize['Height'] or prtcl.posY < 0:
+            if prtcl.posY > self.canvas_size['Height'] or prtcl.posY < 0:
                 prtcl.posY -= prtcl.velY
         else:
             # wrap particle around canvas if out of bounds
             prtcl.posX += prtcl.velX
-            if prtcl.posX > self.canvasSize['Width']:
+            if prtcl.posX > self.canvas_size['Width']:
                 prtcl.posX = 0
             
             if prtcl.posX < 0:
-                prtcl.posX = self.canvasSize['Width']
+                prtcl.posX = self.canvas_size['Width']
 
             prtcl.posY += prtcl.velY
-            if prtcl.posY > self.canvasSize['Height']:
+            if prtcl.posY > self.canvas_size['Height']:
                 prtcl.posY = 0
 
             if prtcl.posY < 0:
-                prtcl.posY = self.canvasSize['Height']
+                prtcl.posY = self.canvas_size['Height']
 
     def returnExampleAttractionMatrices(self, matrixNumber):
         """ Returns example attraction matrices """
