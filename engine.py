@@ -60,8 +60,8 @@ class Engine():
                 if ((r > 0) & (r < self.rMax)):
                     f = self.force((r / self.rMax), 
                                    self.particleCanvas.attractionMatrix
-                                        [self.particleCanvas.colors.index(otherPrtcl.color)]
-                                        [self.particleCanvas.colors.index(prtcl.color)])
+                                        [self.particleCanvas.particle_colors.index(otherPrtcl.color)]
+                                        [self.particleCanvas.particle_colors.index(prtcl.color)])
                     totalForceX += f * rx / r
                     totalForceY += f * ry / r
 

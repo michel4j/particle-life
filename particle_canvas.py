@@ -6,7 +6,7 @@ class ParticleCanvas():
     
     def __init__(self, 
                  particles_per_color = 50, 
-                 colors = ['red', 'green', 'blue'], 
+                 particle_colors = ['red', 'green', 'blue'], 
                  canvas_border = False, 
                  particle_size = 2, 
                  canvas_size = {'Width': 1200, 'Height': 1200}, 
@@ -17,7 +17,7 @@ class ParticleCanvas():
 
         # Particles
         self.particles_per_color = particles_per_color
-        self.colors = colors
+        self.particle_colors = particle_colors
         self.particle_size = particle_size
         self.particles = self.generateRandomParticles()
         self.attractionMatrix = self.generateRandomAttractionMatrix()
@@ -39,7 +39,7 @@ class ParticleCanvas():
             Returns list of generatd particles""" 
         particles = []
 
-        for color in self.colors:
+        for color in self.particle_colors:
             for i in range(self.particles_per_color):
                 posX = random.uniform(0, self.canvas_size['Width'])
                 posY = random.uniform(0, self.canvas_size['Height'])
@@ -50,9 +50,9 @@ class ParticleCanvas():
     def generateRandomAttractionMatrix(self):
         """ Generate random attraction matrix. 
             Values are between -1 and 1"""
-        matrix = [[0 for x in range(len(self.colors))] for y in range(len(self.colors))]
-        for i in range(len(self.colors)):
-            for j in range(len(self.colors)):
+        matrix = [[0 for x in range(len(self.particle_colors))] for y in range(len(self.particle_colors))]
+        for i in range(len(self.particle_colors)):
+            for j in range(len(self.particle_colors)):
                 matrix[i][j] = random.uniform(-1, 1)
         return matrix
     
