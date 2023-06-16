@@ -11,7 +11,7 @@ class Engine():
         self.dt = 0.02
 
         # Particles 
-        self.rMax = 500
+        self.rMax = 180
         self.frictionHalfLife = 0.04
         self.frictionFactor = math.pow(0.5, self.dt / self.frictionHalfLife)
         self.forceFactor = 0.5
@@ -35,13 +35,17 @@ class Engine():
             begin = time.time_ns()  / (10 ** 9)
         
         if(opencl):
-            print("Particle[0] velocity before: " + str(self.particleCanvas.particles[0].velX))
+            print("Particle[0] X velocity before: " + str(self.particleCanvas.particles[0].velX))
+            print("Particle[0] X position before: " + str(self.particleCanvas.particles[0].posX))
             self.pyopenclUpdateParticleVelocities()
-            print("Particle[0] velocity after: " + str(self.particleCanvas.particles[0].velX))
+            print("Particle[0] X velocity after: " + str(self.particleCanvas.particles[0].velX))
+            print("Particle[0] X position after: " + str(self.particleCanvas.particles[0].posX))
         else:
-            print("Particle[0] velocity before: " + str(self.particleCanvas.particles[0].velX))
+            print("Particle[0] X velocity before: " + str(self.particleCanvas.particles[0].velX))
+            print("Particle[0] X position before: " + str(self.particleCanvas.particles[0].posX))
             self.updateParticleVelocities()
-            print("Particle[0] velocity after: " + str(self.particleCanvas.particles[0].velX))
+            print("Particle[0] X velocity after: " + str(self.particleCanvas.particles[0].velX))
+            print("Particle[0] X position after: " + str(self.particleCanvas.particles[0].posX))
 
         if(self.debug):
             print("1. Calculate forces between particles:\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
