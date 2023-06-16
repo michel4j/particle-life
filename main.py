@@ -22,7 +22,7 @@ eng = engine.Engine(particle_canvas = cnvs,
 
 def game_loop(self):
     
-    # For FPS calculation
+    # For cycle_time calculation
     begin = time.time_ns()  / (10 ** 9) # convert to seconds
 
     # Update particle velocities
@@ -39,6 +39,8 @@ def game_loop(self):
     if debug_state:
         print("--------------------------------------------------------------------")
         print("Cycle time:\t\t\t\t\t" + str(cycle_time) + " seconds")
+    
+    # Prevent division by zero
     if cycle_time == 0:
         wndw.updateFPS(round(1 / 0.01666))
         if debug_state:
