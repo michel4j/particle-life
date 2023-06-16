@@ -6,7 +6,7 @@ import time
 
 debug_state = True
 
-cnvs = particle_canvas.ParticleCanvas(particles_per_color = 1, 
+cnvs = particle_canvas.ParticleCanvas(particles_per_color = 50, 
                                       particle_colors = ['red', 'green', 'blue', 'orange'], 
                                       particle_size = 5, 
                                       canvas_border = False, 
@@ -26,7 +26,7 @@ def game_loop(self):
     begin = time.time_ns()  / (10 ** 9) # convert to seconds
 
     # Update particle velocities
-    eng.update()
+    eng.update(opencl=True)
 
     # Update particle positions on canvas
     cnvs.update()

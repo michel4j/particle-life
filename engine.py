@@ -11,7 +11,7 @@ class Engine():
         self.dt = 0.02
 
         # Particles 
-        self.rMax = 180
+        self.rMax = 500
         self.frictionHalfLife = 0.04
         self.frictionFactor = math.pow(0.5, self.dt / self.frictionHalfLife)
         self.forceFactor = 0.5
@@ -29,13 +29,19 @@ class Engine():
 
         self.debug = debug
 
-    def update(self):
+    def update(self, opencl = True):
         """ Update particle velocities """
         if(self.debug):
             begin = time.time_ns()  / (10 ** 9)
         
-        self.pyopenclUpdateParticleVelocities()
-        #self.updateParticleVelocities()
+        if(opencl):
+            print("Particle[0] velocity before: " + str(self.particleCanvas.particles[0].velX))
+            self.pyopenclUpdateParticleVelocities()
+            print("Particle[0] velocity after: " + str(self.particleCanvas.particles[0].velX))
+        else:
+            print("Particle[0] velocity before: " + str(self.particleCanvas.particles[0].velX))
+            self.updateParticleVelocities()
+            print("Particle[0] velocity after: " + str(self.particleCanvas.particles[0].velX))
 
         if(self.debug):
             print("1. Calculate forces between particles:\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
@@ -61,6 +67,7 @@ class Engine():
                                             float rMax,
                                             float forceFactor,
                                             float frictionFactor,
+                                            float dt,
                                             float canvasWidth,
                                             float canvasHeight,
                                             __global float* attractionMatrix) {
@@ -113,8 +120,8 @@ class Engine():
             velocityX *= frictionFactor;
             velocityY *= frictionFactor;
 
-            velocityX += totalForceX;
-            velocityY += totalForceY;
+            velocityX += totalForceX * dt;
+            velocityY += totalForceY * dt;
 
             velocities[gid] = velocityX;
             velocities[gid + 1] = velocityY;
@@ -136,7 +143,7 @@ class Engine():
             velocities[2 * i + 1] = prtcl.velY
             colors[i] = self.particleCanvas.particle_colors.index(prtcl.color)
 
-        positions_buffer = cl.Buffer(self.context, cl.mem_flags.READ_WRITE | cl.mem_flags.COPY_HOST_PTR, hostbuf=positions)
+        positions_buffer = cl.Buffer(self.context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, hostbuf=positions)
         velocities_buffer = cl.Buffer(self.context, cl.mem_flags.READ_WRITE | cl.mem_flags.COPY_HOST_PTR, hostbuf=velocities)
         colors_buffer = cl.Buffer(self.context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, hostbuf=colors)
         attraction_matrix_buffer = cl.Buffer(self.context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, hostbuf=attraction_matrix)
@@ -144,7 +151,7 @@ class Engine():
         self.program.updateParticleVelocities(self.queue, (num_particles,), None,
                                             positions_buffer, velocities_buffer, colors_buffer,
                                             np.int32(num_particles), np.float32(self.rMax),
-                                            np.float32(self.forceFactor), np.float32(self.frictionFactor),
+                                            np.float32(self.forceFactor), np.float32(self.frictionFactor), np.float32(self.dt),
                                             np.float32(self.particleCanvas.canvas_size['Width']),
                                             np.float32(self.particleCanvas.canvas_size['Height']),
                                             attraction_matrix_buffer)
@@ -153,7 +160,7 @@ class Engine():
 
         for i, prtcl in enumerate(self.particleCanvas.particles):
             prtcl.velX = velocities[i]
-            prtcl.velY = velocities[num_particles + i]
+            prtcl.velY = velocities[i + 1]
     
 
     # fuck me im not writing this function myself 
