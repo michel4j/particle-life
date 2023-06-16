@@ -11,7 +11,7 @@ class Engine():
         self.dt = 0.02
 
         # Particles 
-        self.rMax = 180
+        self.rMax = 250
         self.frictionHalfLife = 0.04
         self.frictionFactor = math.pow(0.5, self.dt / self.frictionHalfLife)
         self.forceFactor = 0.5
@@ -82,16 +82,16 @@ class Engine():
             float totalForceX = 0;
             float totalForceY = 0;
 
-            float prtclX = positions[gid];
-            float prtclY = positions[gid + 1];
+            float prtclX = positions[2*gid];
+            float prtclY = positions[2*gid + 1];
             int prtclColorIndex = colors[gid];
 
             for (int i = 0; i < numParticles; i++) {
                 if (i == gid)
                     continue;
 
-                float otherPrtclX = positions[i];
-                float otherPrtclY = positions[i + 1];
+                float otherPrtclX = positions[2*i];
+                float otherPrtclY = positions[2*i + 1];
                 int otherPrtclColorIndex = colors[i];
 
                 // Calculate distance between particles
@@ -120,8 +120,8 @@ class Engine():
             totalForceX *= rMax * forceFactor;
             totalForceY *= rMax * forceFactor;
 
-            float velocityX = velocities[gid];
-            float velocityY = velocities[gid + 1];
+            float velocityX = velocities[2*gid];
+            float velocityY = velocities[2*gid + 1];
 
             velocityX *= frictionFactor;
             velocityY *= frictionFactor;
@@ -129,8 +129,8 @@ class Engine():
             velocityX += totalForceX * dt;
             velocityY += totalForceY * dt;
 
-            velocities[gid] = velocityX;
-            velocities[gid + 1] = velocityY;
+            velocities[2*gid] = velocityX;
+            velocities[2*gid + 1] = velocityY;
         }
         """
 
@@ -165,8 +165,8 @@ class Engine():
         cl.enqueue_copy(self.queue, velocities, velocities_buffer)
 
         for i, prtcl in enumerate(self.particle_canvas.particles):
-            prtcl.velX = velocities[i]
-            prtcl.velY = velocities[i + 1]
+            prtcl.velX = velocities[2 * i]
+            prtcl.velY = velocities[2 * i + 1]
     
 
     # fuck me im not writing this function myself 

@@ -8,7 +8,7 @@ debug_state = True
 
 cnvs = particle_canvas.ParticleCanvas(particles_per_color = 50, 
                                       particle_colors = ['red', 'green', 'blue', 'orange'], 
-                                      particle_size = 5, 
+                                      particle_size = 2, 
                                       canvas_border = False, 
                                       canvas_size = {'Width': 1200, 'Height': 1200},
                                       debug = debug_state)
