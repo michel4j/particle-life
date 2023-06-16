@@ -38,6 +38,8 @@ class Engine():
             print("Particle[0] X velocity before: " + str(self.particle_canvas.particles[0].velX))
             print("Particle[0] X position before: " + str(self.particle_canvas.particles[0].posX))
             self.pyopenclUpdateParticleVelocities()
+            for prtcl in self.particle_canvas.particles:
+                self.updateParticlePosition(prtcl)
             print("Particle[0] X velocity after: " + str(self.particle_canvas.particles[0].velX))
             print("Particle[0] X position after: " + str(self.particle_canvas.particles[0].posX))
         else:

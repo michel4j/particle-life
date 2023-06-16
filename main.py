@@ -26,7 +26,7 @@ def game_loop(self):
     begin = time.time_ns()  / (10 ** 9) # convert to seconds
 
     # Update particle velocities
-    eng.update(opencl=False)
+    eng.update(opencl=True)
 
     # Update particle positions on canvas
     cnvs.update()
