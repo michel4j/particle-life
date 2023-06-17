@@ -6,7 +6,7 @@ import time
 debug_state = False
 
 Particle_Canvas = particle_canvas.ParticleCanvas(total_particles = 10000, 
-                                                 particle_colors = ['red', 'blue', 'green', 'purple', 'yellow', 'white'], 
+                                                 particle_colors = ['red', 'orange', 'yellow', 'light green', 'light blue', 'dark purple'], 
                                                  number_of_colors = 4,
                                                  particle_size = 2, 
                                                  canvas_border = False, 

@@ -77,14 +77,16 @@ class ParticleCanvas():
         """ Returns example attraction matrices """
         matrix = []
         match matrixNumber:
-            case 1:
-                matrix =[   [   1,   0.8,    0.6,   0.4,    0.2,    0.1], 
-                            [ 0.8,   1,      0.8,   0.6,    0.4,    0.2],
-                            [ 0.6,   0.8,      1,   0.8,    0.6,    0.4],
-                            [ 0.4,   0.6,    0.8,   1  ,    0.8,    0.6],
-                            [ 0.2,   0.4,    0.6,   0.8,    1  ,    0.8],
-                            [ 0.1,   0.2,    0.4,   0.6,    0.8,    1  ]]
-                
+            # snake matrix. each color is attracted to the next color (1 to itself, 0.2 to the next color, 0 to the rest)
+            case 1: 
+                matrix =[   [ 1  ,   0.2,    0  ,   0  ,    0  ,    0  ],
+                            [ 0  ,   1  ,    0.2,   0  ,    0  ,    0  ],
+                            [ 0  ,   0  ,    1  ,   0.2,    0  ,    0  ],
+                            [ 0  ,   0  ,    0  ,   1  ,    0.2,    0  ],
+                            [ 0  ,   0  ,    0  ,   0  ,    1  ,    0.2],
+                            [ 0.2,   0  ,    0  ,   0  ,    0  ,    1  ]]
+
+            # random matrix but kinda fun
             case 2:
                 matrix =[   [ 0.3,  -0.5,   -0.3,   0.3,    0.5,    0.3],
                             [   1,   0.5,      1,   0.5,    0.3,    0.5],
@@ -92,39 +94,42 @@ class ParticleCanvas():
                             [-0.3,     1,    0.5,   0.8,    0.5,    0.3],
                             [ 0.3,   0.5,    0.8,   0.5,    0.3,    0.5],
                             [ 0.5,   0.3,    0.5,   0.3,    0.5,    0.3]]
-                
+
+            # chain matrix 1
             case 3:
-                matrix =[   [  -1,   0.8,    0.6,   0.4,    0.2,    0.1], 
-                            [ 0.8,    -1,    0.8,   0.6,    0.4,    0.2],
-                            [ 0.6,   0.8,     -1,   0.8,    0.6,    0.4],
-                            [ 0.4,   0.6,    0.8,    -1,    0.8,    0.6],
-                            [ 0.2,   0.4,    0.6,   0.8,     -1,    0.8],
-                            [ 0.1,   0.2,    0.4,   0.6,    0.8,     -1]]
-                
+                matrix =[   [   1,   0.2,     -1,    -1,     -1,    0.2],
+                            [ 0.2,     1,    0.2,    -1,     -1,     -1],
+                            [  -1,   0.2,      1,   0.2,     -1,     -1],
+                            [  -1,    -1,    0.2,     1,    0.2,     -1],
+                            [  -1,    -1,     -1,   0.2,      1,    0.2],
+                            [ 0.2,    -1,     -1,    -1,    0.2,      1]]
+
+            # chain matrix 2
             case 4:
-                matrix =[   [  -1,   0.8,    0.6,   0.4,    0.2,    0.1], 
-                            [ 0.8,    -1,   -0.8,   0.6,    0.4,    0.2],
-                            [-0.6,   0.8,     -1,   0.8,    0.6,    0.4],
-                            [ 0.4,  -0.6,    0.8,    -1,    0.8,    0.6],
-                            [ 0.2,   0.4,    0.6,   0.8,     -1,    0.8],
-                            [ 0.1,   0.2,    0.4,   0.6,    0.8,     -1]]
-            
+                matrix =[   [   1,     1,     -1,    -1,     -1,      1],
+                            [   1,     1,      1,    -1,     -1,     -1],
+                            [  -1,     1,      1,     1,     -1,     -1],
+                            [  -1,    -1,      1,     1,      1,     -1],
+                            [  -1,    -1,     -1,     1,      1,      1],
+                            [   1,    -1,     -1,    -1,      1,      1]] 
+
+            # chain matrix 3
             case 5:
-                matrix =[   [   1,   0.2,      0,  -0.2,   -0.2,      0], 
-                            [-0.2,     1,    0.2,     0,      0,   -0.2],
-                            [   0,  -0.2,      1,   0.2,      0,      0],
-                            [ 0.2,     0,   -0.2,     1,    0.2,      0],
-                            [ 0.2,     0,      0,   0.2,      1,   -0.2],
-                            [   0,   0.2,      0,     0,   -0.2,      1]]
-                
+                matrix =[   [   1,   0.2,      0,     0,      0,    0,2], 
+                            [ 0.2,     1,    0.2,     0,      0,      0],
+                            [   0,   0.2,      1,   0.2,      0,      0],
+                            [   0,     0,    0.2,     1,    0.2,      0],
+                            [   0,     0,      0,   0.2,      1,    0.2],
+                            [ 0.2,     0,      0,     0,    0.2,      1]]
+
+            # Write a loop that generates a random symmetric matrix
+            # generate random symmetric matrix, split diagonally from top left to bottom right
             case 6:
-                matrix =[   [   1,     1,      0,     0,      0,      0],
-                            [   1,    -1,     -1,     0,      0,      0],
-                            [   0,    -1,     -1,     1,      0,      0],
-                            [   0,     0,      1,     1,     -1,      0],
-                            [   0,     0,      0,    -1,     -1,      1],
-                            [   0,     0,      0,     0,      1,      1]]
-                
+                matrix = [[1 if i == j else random.uniform(-1, 1) for j in range(len(self.particle_colors))] for i in range(len(self.particle_colors))]
+                for i in range(len(self.particle_colors)):
+                    for j in range(len(self.particle_colors)):
+                        if i > j:
+                            matrix[i][j] = matrix[j][i]
             case _:
                 matrix = self.generateRandomAttractionMatrix()
         

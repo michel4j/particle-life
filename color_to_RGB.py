@@ -1,14 +1,14 @@
 def transform(color):
     if color == "red":
-        return (255, 0, 0)
+        return (233, 0, 45)
     elif color == "green":
         return (0, 255, 0)
     elif color == "blue":
         return (0, 0, 255)
     elif color == "orange":
-        return (255, 165, 0)
+        return (254, 130, 0)
     elif color == "yellow":
-        return (255, 255, 0)
+        return (255, 234, 0)
     elif color == "purple":
         return (128, 0, 128)
     elif color == "pink":
@@ -23,6 +23,12 @@ def transform(color):
         return (255, 0, 255)
     elif color == "white":
         return (255, 255, 255)
+    elif color == "light blue":
+        return (0, 120, 203)
+    elif color == "dark purple":
+        return (63, 0, 151)
+    elif color == "light green":
+        return (58, 172, 0)
     elif color == "black":
         return (0, 0, 0)
     else:

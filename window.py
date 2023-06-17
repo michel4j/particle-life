@@ -200,7 +200,18 @@ class Window():
             # change attraction matrix on key press
             elif symbol == key._1:
                 self.particle_canvas.updateMatrix(1)
-                self.attraction_matrix_label.text = "Attraction matrix: 1"
+                self.attraction_matrix_label.text = "Attraction matrix: snakes"
+                self.particle_canvas.engine.frictionHalfLife = 0.01
+                self.particle_canvas.engine.calculateFrictionFactor()
+                self.frictionHalfLife_label.text = "FrictionHalfLife: " + str(round(self.particle_canvas.engine.frictionHalfLife, 3))
+                self.frictionFactor_label.text = "FrictionFactor: " + str(round(self.particle_canvas.engine.frictionFactor, 3))
+                self.particle_canvas.forceFactor = 0.1
+                self.forceFactor_label.text = "ForceFactor: " + str(round(self.particle_canvas.forceFactor, 3))
+                self.particle_canvas.engine.rMax = 50
+                self.rMax_label.text = "rMax: " + str(self.particle_canvas.engine.rMax)
+                self.particle_canvas.engine.dt = 0.002
+                self.dt_label.text = "Time dt: " + str(round(self.particle_canvas.engine.dt, 3))
+
             elif symbol == key._2:
                 self.particle_canvas.updateMatrix(2)
                 self.attraction_matrix_label.text = "Attraction matrix: 2"
@@ -270,7 +281,17 @@ class Window():
 
         if(self.debug):
             print("3. Draw UI:\t\t\t\t\t" + str(time.time_ns()  / (10 ** 9) - particle_time) + " seconds")
-        
+    
+    def updateLabelText(self):
+        self.particle_count_label.text = "Particles: " + str(len(self.particle_canvas.particles))
+        self.number_of_colors_label.text = "Number of colors: " + str(self.particle_canvas.number_of_colors)
+        self.dt_label.text = "Time dt: " + str(round(self.particle_canvas.engine.dt, 3))
+        self.rMax_label.text = "rMax: " + str(self.particle_canvas.engine.rMax)
+        self.forceFactor_label.text = "ForceFactor: " + str(round(self.particle_canvas.engine.forceFactor, 3))
+        self.frictionHalfLife_label.text = "FrictionHalfLife: " + str(round(self.particle_canvas.engine.frictionHalfLife, 3))
+        self.particle_canvas.engine.calculateFrictionFactor()
+        self.frictionFactor_label.text = "FrictionFactor: " + str(round(self.particle_canvas.engine.frictionFactor, 3))
+
     def createNewVertexList(self):
         vertices, colors = self.updateVertexList()
         return self.batch.add(len(self.particle_canvas.particles) * 4, pyglet.gl.GL_QUADS, None,
