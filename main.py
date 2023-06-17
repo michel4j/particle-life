@@ -3,18 +3,18 @@ import particle_canvas
 import window
 import time
 
-debug_state = True
+debug_state = False
 
-Particle_Canvas = particle_canvas.ParticleCanvas(particles_per_color = 2500, 
-                                      particle_colors = ['red', 'green', 'blue', 'orange'], 
-                                      particle_size = 2, 
-                                      canvas_border = False, 
-                                      canvas_size = {'Width': 1200, 'Height': 1200},
-                                      debug = debug_state)
+Particle_Canvas = particle_canvas.ParticleCanvas(total_particles = 10000, 
+                                                 particle_colors = ['red', 'blue', 'green', 'purple'], 
+                                                 particle_size = 2, 
+                                                 canvas_border = False, 
+                                                 canvas_size = {'Width': 1200, 'Height': 1200},
+                                                 debug = debug_state)
 
 Window = window.Window(particle_canvas = Particle_Canvas, 
-                     title = 'Particle Life', 
-                     debug = debug_state)
+                       title = 'Particle Life', 
+                       debug = debug_state)
 
 def game_loop(self):
     

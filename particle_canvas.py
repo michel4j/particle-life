@@ -6,7 +6,7 @@ import engine
 class ParticleCanvas():
     
     def __init__(self, 
-                 particles_per_color = 50, 
+                 total_particles = 50, 
                  particle_colors = ['red', 'green', 'blue'], 
                  canvas_border = False, 
                  particle_size = 2, 
@@ -17,7 +17,7 @@ class ParticleCanvas():
         self.canvas_size = canvas_size
 
         # Particles
-        self.particles_per_color = particles_per_color
+        self.particles_per_color = round(total_particles / len(particle_colors))
         self.particle_colors = particle_colors
         self.particle_size = particle_size
         self.particles = self.generateRandomParticles()
