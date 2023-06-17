@@ -18,7 +18,8 @@ class ParticleCanvas():
         self.UI_space = 200
 
         # Particles
-        self.particles_per_color = round(total_particles / len(particle_colors))
+        self.total_particles = total_particles
+        self.particles_per_color = round(self.total_particles / len(particle_colors))
         self.particle_colors = particle_colors
         self.particle_size = particle_size
         self.particles = self.generateRandomParticles()
@@ -32,6 +33,11 @@ class ParticleCanvas():
     def update(self):
         """ Update particle canvas """
         self.engine.update()
+
+    def updateParticleNumber(self):
+        """ Update total number of particles """
+        self.particles_per_color = round(self.total_particles / len(self.particle_colors))
+        self.particles = self.generateRandomParticles()
     
     def generateRandomParticles(self):      
         """ Generate random particles for each color.

@@ -1,6 +1,7 @@
 import pyglet
 import color_to_RGB
 import time
+from pyglet.window import key
 
 class Window():
     
@@ -15,13 +16,7 @@ class Window():
         
         # Pyglet rendering
         self.batch = pyglet.graphics.Batch()
-        self.vertex_list = None
-
-        # Create vertex list for particles(use GL_QUADS)
-        vertices, colors = self.updateVertexList()
-        self.vertex_list = self.batch.add(len(self.particle_canvas.particles) * 4, pyglet.gl.GL_QUADS, None,
-                                                       ('v2f', vertices),
-                                                       ('c3B', colors),) 
+        self.vertex_list = self.createNewVertexList()
 
         # UI Shit
         self.space_between_labels = 14
@@ -62,6 +57,34 @@ class Window():
                         font_size=self.font_size,
                         x=2, y=self.frictionHalfLife_label.y - self.space_between_labels)
 
+        @self.window.event
+        def on_key_press(symbol, modifiers):
+            
+            # change particle count on key press
+            if symbol == key.Q:
+                self.particle_canvas.total_particles += 1000
+                self.particle_canvas.updateParticleNumber()
+                # Clear old batch and create new vertex list and add it to batch
+                self.batch = pyglet.graphics.Batch()
+                self.vertex_list = self.createNewVertexList()
+                self.particle_count_label.text = "Particles: " + str(len(self.particle_canvas.particles))
+            elif symbol == key.A:
+                if self.particle_canvas.total_particles > 1000:
+                    self.particle_canvas.total_particles -= 1000
+                    self.particle_canvas.updateParticleNumber()
+                    # Clear old batch and create new vertex list and add it to batch
+                    self.batch = pyglet.graphics.Batch()
+                    self.vertex_list = self.createNewVertexList()
+                    self.particle_count_label.text = "Particles: " + str(len(self.particle_canvas.particles))
+
+            # change dt on key press
+            elif symbol == key.W:
+                self.particle_canvas.engine.dt += 0.001
+                self.dt_label.text = "Time dt: " + str(self.particle_canvas.engine.dt)
+            elif symbol == key.S:
+                self.particle_canvas.engine.dt -= 0.001
+                self.dt_label.text = "Time dt: " + str(self.particle_canvas.engine.dt)
+
         self.debug = debug
     
     def update(self):
@@ -88,6 +111,11 @@ class Window():
         if(self.debug):
             print("2. Render pyglet window:\t\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
         
+    def createNewVertexList(self):
+        vertices, colors = self.updateVertexList()
+        return self.batch.add(len(self.particle_canvas.particles) * 4, pyglet.gl.GL_QUADS, None,
+                                                       ('v2f', vertices),
+                                                       ('c3B', colors),) 
 
     def updateVertexList(self, color=True):
         """ Create vertex list for particles. 

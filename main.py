@@ -3,7 +3,7 @@ import particle_canvas
 import window
 import time
 
-debug_state = False
+debug_state = True
 
 Particle_Canvas = particle_canvas.ParticleCanvas(total_particles = 10000, 
                                                  particle_colors = ['red', 'blue', 'green', 'purple'], 
