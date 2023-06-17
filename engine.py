@@ -6,7 +6,7 @@ import numpy as np
 class Engine():
     def __init__(self, particle_canvas, debug = False):
         # Time
-        self.dt = 0.02
+        self.dt = 0.005
 
         # Particles 
         self.rMax = 50
@@ -34,7 +34,7 @@ class Engine():
         self.updateParticles()
 
         if(self.debug):
-            print("1. Move particles:\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
+            print("1. Move particles:\t\t\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
 
     def kernelCode(self):
         return"""
@@ -168,16 +168,18 @@ class Engine():
                 prtcl.posY -= prtcl.velY
         else:
             # wrap particle around canvas if out of bounds
-            prtcl.posX += prtcl.velX
+            
             if prtcl.posX > self.particle_canvas.canvas_size['Width']:
                 prtcl.posX = 0
             
-            if prtcl.posX < 0:
+            elif prtcl.posX < 0:
                 prtcl.posX = self.particle_canvas.canvas_size['Width']
+            prtcl.posX += prtcl.velX
 
-            prtcl.posY += prtcl.velY
+            
             if prtcl.posY > self.particle_canvas.canvas_size['Height']:
                 prtcl.posY = 0
 
-            if prtcl.posY < 0:
+            elif prtcl.posY < 0:
                 prtcl.posY = self.particle_canvas.canvas_size['Height']
+            prtcl.posY += prtcl.velY
