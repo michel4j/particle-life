@@ -5,20 +5,23 @@ import time
 class Window():
     
     def __init__(self, particle_canvas, title='Particle Life', debug = False):
+        # Particle canvas object
+        self.particle_canvas = particle_canvas
+        
         # Create window
         self.window_size = {'Width': particle_canvas.canvas_size['Width'], 'Height': particle_canvas.canvas_size['Height']}
         self.title = title
-        self.window = pyglet.window.Window(self.window_size['Width'], self.window_size['Height'], self.title)
+        self.window = pyglet.window.Window(self.window_size['Width'] + particle_canvas.UI_space, self.window_size['Height'], self.title)
         
         # Pyglet rendering
         self.batch = pyglet.graphics.Batch()
         self.vertex_list = None
 
-        self.debug = debug
-
-        # Particle canvas
-        self.particle_canvas = particle_canvas
-
+        # Create vertex list for particles(use GL_QUADS)
+        vertices, colors = self.updateVertexList()
+        self.vertex_list = self.batch.add(len(self.particle_canvas.particles) * 4, pyglet.gl.GL_QUADS, None,
+                                                       ('v2f', vertices),
+                                                       ('c3B', colors),)  
         # Create FPS label
         self.fps_label = pyglet.text.Label("FPS: 0000",
                         font_size=10,
@@ -30,12 +33,8 @@ class Window():
                         font_size=10,
                         x=54, y=self.window.height - 7,
                         anchor_x='center', anchor_y='center')
-
-        # Create vertex list for particles(use GL_QUADS)
-        vertices, colors = self.updateVertexList()
-        self.vertex_list = self.batch.add(len(self.particle_canvas.particles) * 4, pyglet.gl.GL_QUADS, None,
-                                                       ('v2f', vertices),
-                                                       ('c3B', colors),)  
+        
+        self.debug = debug
     
     def update(self):
         """ Update window """

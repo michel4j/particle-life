@@ -14,14 +14,15 @@ class ParticleCanvas():
                  debug = False):
         # Canvas
         self.canvas_border = canvas_border
-        self.canvas_size = canvas_size
+        self.canvas_size = {'Width': canvas_size['Width'], 'Height': canvas_size['Height']}
+        self.UI_space = 200
 
         # Particles
         self.particles_per_color = round(total_particles / len(particle_colors))
         self.particle_colors = particle_colors
         self.particle_size = particle_size
         self.particles = self.generateRandomParticles()
-        self.attractionMatrix = self.generateRandomAttractionMatrix()
+        self.attractionMatrix = self.returnExampleAttractionMatrices(2)
 
         # Engine
         self.engine = engine.Engine(particle_canvas = self, debug = debug)
@@ -39,7 +40,7 @@ class ParticleCanvas():
 
         for color in self.particle_colors:
             for i in range(self.particles_per_color):
-                posX = random.uniform(0, self.canvas_size['Width'])
+                posX = random.uniform(self.UI_space, self.canvas_size['Width'] + self.UI_space)
                 posY = random.uniform(0, self.canvas_size['Height'])
                 particles.append(particle.Particle(posX, posY, color))
 

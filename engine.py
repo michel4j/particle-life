@@ -58,8 +58,6 @@ class Engine():
                                             float forceFactor,
                                             float frictionFactor,
                                             float dt,
-                                            float canvasWidth,
-                                            float canvasHeight,
                                             __global float* attractionMatrix,
                                             int numColors) {
             int gid = get_global_id(0);
@@ -135,8 +133,6 @@ class Engine():
                                             positions_buffer, velocities_buffer, colors_buffer,
                                             np.int32(num_particles), np.float32(self.rMax),
                                             np.float32(self.forceFactor), np.float32(self.frictionFactor), np.float32(self.dt),
-                                            np.float32(self.particle_canvas.canvas_size['Width']),
-                                            np.float32(self.particle_canvas.canvas_size['Height']),
                                             attraction_matrix_buffer, np.int32(num_colors))
 
         cl.enqueue_copy(self.queue, velocities, velocities_buffer)
@@ -151,7 +147,7 @@ class Engine():
         if(self.particle_canvas.canvas_border):
             # revert velocity if particle is out of bounds
             prtcl.posX += prtcl.velX
-            if prtcl.posX > self.particle_canvas.canvas_size['Width'] or prtcl.posX < 0:
+            if prtcl.posX > self.particle_canvas.canvas_size['Width'] + self.particle_canvas.UI_space or prtcl.posX < -1 + self.particle_canvas.UI_space:
                 prtcl.posX -= prtcl.velX
 
             prtcl.posY += prtcl.velY
@@ -160,13 +156,13 @@ class Engine():
         else:
             # wrap particle around canvas if out of bounds
             prtcl.posX += prtcl.velX
-            if prtcl.posX > self.particle_canvas.canvas_size['Width']:
+            if prtcl.posX > self.particle_canvas.canvas_size['Width'] + self.particle_canvas.UI_space:
                 distance_over_border = prtcl.posX - self.particle_canvas.canvas_size['Width']
                 prtcl.posX = distance_over_border
             
-            elif prtcl.posX < -1:
-                distance_over_border = prtcl.posX
-                prtcl.posX = self.particle_canvas.canvas_size['Width'] + distance_over_border
+            elif prtcl.posX < -1 + self.particle_canvas.UI_space:
+                distance_over_border = prtcl.posX - self.particle_canvas.UI_space
+                prtcl.posX = self.particle_canvas.canvas_size['Width'] + self.particle_canvas.UI_space + distance_over_border
 
             prtcl.posY += prtcl.velY
             if prtcl.posY > self.particle_canvas.canvas_size['Height']:
