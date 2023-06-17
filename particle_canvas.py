@@ -37,6 +37,10 @@ class ParticleCanvas():
         """ Update particle canvas """
         self.engine.update()
 
+    def updateMatrix(self, matrixNumber):
+        """ Update attraction matrix """
+        self.attractionMatrix = self.returnExampleAttractionMatrices(matrixNumber)    
+
     def updateParticleColors(self):
         """ Update particle colors """
         self.selected_colors = self.particle_colors[:self.number_of_colors]

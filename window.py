@@ -27,74 +27,87 @@ class Window():
                          font_size=self.font_size,
                          x=2, y=self.window.height  - self.space_between_labels)
         
-
-        # Create label how to adjust number of particles
-        self.adjust_particle_count_label = pyglet.text.Label("Q/A to increase/decrease",
-                        font_size=self.font_size,
-                        x=2, y=self.fps_label.y - (self.space_between_labels*2))
+        
         # Create number of particles label
         self.particle_count_label = pyglet.text.Label("Particles: " + str(len(self.particle_canvas.particles)),
                         font_size=self.font_size,
-                        x=2, y=self.adjust_particle_count_label.y - self.space_between_labels)
-        
-        
-        # Create label how to adjust dt
-        self.adjust_dt_label = pyglet.text.Label("W/S to increase/decrease",
+                        x=2, y=self.fps_label.y - (self.space_between_labels*3))
+        # Create label how to adjust number of particles
+        self.adjust_particle_count_label = pyglet.text.Label("Q/A to increase/decrease",
                         font_size=self.font_size,
-                        x=2, y=self.particle_count_label.y - (self.space_between_labels*2))
+                        x=2, y=self.particle_count_label.y - self.space_between_labels)
+        
+        # Create number of colors label
+        self.number_of_colors_label = pyglet.text.Label("Number of colors: " + str(self.particle_canvas.number_of_colors),
+                        font_size=self.font_size,
+                        x=2, y=self.adjust_particle_count_label.y - (self.space_between_labels*2))
+        # Create label how to adjust number of colors
+        self.adjust_number_of_colors_label = pyglet.text.Label("W/S to increase/decrease",
+                        font_size=self.font_size,
+                        x=2, y=self.number_of_colors_label.y - self.space_between_labels)
+        
+        # Create attraction matrix label
+        self.attraction_matrix_label = pyglet.text.Label("Attraction matrix: 2",
+                        font_size=self.font_size,
+                        x=2, y=self.adjust_number_of_colors_label.y - (self.space_between_labels*2))
+        # Create label how to adjust attraction matrix
+        self.adjust_attraction_matrix_label = pyglet.text.Label("1-6 to change matrix",
+                        font_size=self.font_size,
+                        x=2, y=self.attraction_matrix_label.y - self.space_between_labels)
+        # Create label how to adjust attraction matrix
+        self.adjust_attraction_matrix_label2 = pyglet.text.Label("0 for random matrix",
+                        font_size=self.font_size,
+                        x=2, y=self.adjust_attraction_matrix_label.y - self.space_between_labels)
+    
         # Create dt label
         self.dt_label = pyglet.text.Label("Time dt: " + str(round(self.particle_canvas.engine.dt, 3)), 
                         font_size=self.font_size,
-                        x=2, y=self.adjust_dt_label.y - self.space_between_labels )
-
-        # Create label how to adjust rMax
-        self.adjust_rMax_label = pyglet.text.Label("E/D to increase/decrease",
+                        x=2, y=self.adjust_attraction_matrix_label2.y - (self.space_between_labels*3))
+        # Create label how to adjust dt
+        self.adjust_dt_label = pyglet.text.Label("E/D to increase/decrease",
                         font_size=self.font_size,
-                        x=2, y=self.dt_label.y - (self.space_between_labels*2))
+                        x=2, y=self.dt_label.y - self.space_between_labels)
+        
         # Create rMax label
         self.rMax_label = pyglet.text.Label("rMax: " + str(self.particle_canvas.engine.rMax), 
                         font_size=self.font_size,
-                        x=2, y=self.adjust_rMax_label.y - self.space_between_labels)
-        
-        # Create label how to adjust forceFactor
-        self.adjust_forceFactor_label = pyglet.text.Label("R/F to increase/decrease",
+                        x=2, y=self.adjust_dt_label.y - (self.space_between_labels*2))
+        # Create label how to adjust rMax
+        self.adjust_rMax_label = pyglet.text.Label("R/F to increase/decrease",
                         font_size=self.font_size,
-                        x=2, y=self.rMax_label.y - (self.space_between_labels*2))
+                        x=2, y=self.rMax_label.y - self.space_between_labels)
+        
         # Create forceFactor label
         self.forceFactor_label = pyglet.text.Label("ForceFactor: " + str(self.particle_canvas.engine.forceFactor),
                         font_size=self.font_size,
-                        x=2, y=self.adjust_forceFactor_label.y - self.space_between_labels)
-        
-        # Create label how to adjust frictionHalfLife
-        self.adjust_frictionHalfLife_label = pyglet.text.Label("T/G to increase/decrease",
+                        x=2, y=self.adjust_rMax_label.y - (self.space_between_labels*2))
+                        
+        # Create label how to adjust forceFactor
+        self.adjust_forceFactor_label = pyglet.text.Label("T/G to increase/decrease",
                         font_size=self.font_size,
-                        x=2, y=self.forceFactor_label.y - (self.space_between_labels*2))
+                        x=2, y=self.forceFactor_label.y - self.space_between_labels)
+        
         # Create frictionHalfLife label
         self.frictionHalfLife_label = pyglet.text.Label("FrictionHalfLife: " + str(self.particle_canvas.engine.frictionHalfLife),
                         font_size=self.font_size,
-                        x=2, y=self.adjust_frictionHalfLife_label.y - self.space_between_labels)
+                        x=2, y=self.adjust_forceFactor_label.y - (self.space_between_labels*2))
+        # Create label how to adjust frictionHalfLife
+        self.adjust_frictionHalfLife_label = pyglet.text.Label("Y/H to increase/decrease",
+                        font_size=self.font_size,
+                        x=2, y=self.frictionHalfLife_label.y - self.space_between_labels)
         
+        # Create frictionFactor label
+        self.frictionFactor_label = pyglet.text.Label("FrictionFactor: " + str(round(self.particle_canvas.engine.frictionFactor, 3)),
+                        font_size=self.font_size,
+                        x=2, y=self.adjust_frictionHalfLife_label.y - (self.space_between_labels*2))
         # Create label how to adjust frictionFactor
         self.adjust_frictionFactor_label = pyglet.text.Label("Changes automatically ",
                         font_size=self.font_size,
-                        x=2, y=self.frictionHalfLife_label.y - (self.space_between_labels*2))
+                        x=2, y=self.frictionFactor_label.y - self.space_between_labels)
         # Create 2nd label how to adjust frictionFactor
         self.adjust_frictionFactor_label2 = pyglet.text.Label("based on frictionHalfLife",
                         font_size=self.font_size,
                         x=2, y=self.adjust_frictionFactor_label.y - self.space_between_labels)
-        # Create frictionFactor label
-        self.frictionFactor_label = pyglet.text.Label("FrictionFactor: " + str(round(self.particle_canvas.engine.frictionFactor, 3)),
-                        font_size=self.font_size,
-                        x=2, y=self.adjust_frictionFactor_label2.y - self.space_between_labels)
-        
-        # Create label how to adjust number of colors
-        self.adjust_number_of_colors_label = pyglet.text.Label("Y/H to increase/decrease",
-                        font_size=self.font_size,
-                        x=2, y=self.frictionFactor_label.y - (self.space_between_labels*2))
-        # Create number of colors label
-        self.number_of_colors_label = pyglet.text.Label("Number of colors: " + str(self.particle_canvas.number_of_colors),
-                        font_size=self.font_size,
-                        x=2, y=self.adjust_number_of_colors_label.y - self.space_between_labels)
 
         @self.window.event
         def on_key_press(symbol, modifiers):
@@ -128,46 +141,9 @@ class Window():
                 self.batch = pyglet.graphics.Batch()
                 self.vertex_list = self.createNewVertexList()
                 self.particle_count_label.text = "Particles: " + str(len(self.particle_canvas.particles))
-                    
-
-            # change dt on key press
-            elif symbol == key.W:
-                self.particle_canvas.engine.dt += 0.001
-                self.dt_label.text = "Time dt: " + str(round(self.particle_canvas.engine.dt, 3))
-            elif symbol == key.S:
-                self.particle_canvas.engine.dt -= 0.001
-                self.dt_label.text = "Time dt: " + str(round(self.particle_canvas.engine.dt, 3))
-
-            # change rMax on key press
-            elif symbol == key.E:
-                self.particle_canvas.engine.rMax += 5
-                self.rMax_label.text = "rMax: " + str(self.particle_canvas.engine.rMax)
-            elif symbol == key.D:
-                self.particle_canvas.engine.rMax -= 5
-                self.rMax_label.text = "rMax: " + str(self.particle_canvas.engine.rMax)
-
-            # change forceFactor on key press
-            elif symbol == key.R:
-                self.particle_canvas.engine.forceFactor += 0.1
-                self.forceFactor_label.text = "ForceFactor: " + str(round(self.particle_canvas.engine.forceFactor, 3))
-            elif symbol == key.F:
-                self.particle_canvas.engine.forceFactor -= 0.1
-                self.forceFactor_label.text = "ForceFactor: " + str(round(self.particle_canvas.engine.forceFactor, 3))
-
-            # change frictionHalfLife on key press
-            elif symbol == key.T:
-                self.particle_canvas.engine.frictionHalfLife += 0.01
-                self.frictionHalfLife_label.text = "FrictionHalfLife: " + str(round(self.particle_canvas.engine.frictionHalfLife, 3))
-                self.particle_canvas.engine.calculateFrictionFactor()
-                self.frictionFactor_label.text = "FrictionFactor: " + str(round(self.particle_canvas.engine.frictionFactor, 3))
-            elif symbol == key.G:
-                self.particle_canvas.engine.frictionHalfLife -= 0.01
-                self.frictionHalfLife_label.text = "FrictionHalfLife: " + str(round(self.particle_canvas.engine.frictionHalfLife, 3))
-                self.particle_canvas.engine.calculateFrictionFactor()
-                self.frictionFactor_label.text = "FrictionFactor: " + str(round(self.particle_canvas.engine.frictionFactor, 3))
-
+            
             # change number of colors on key press
-            elif symbol == key.Y:
+            elif symbol == key.W:
                 if self.particle_canvas.number_of_colors < len(self.particle_canvas.particle_colors):
                     self.particle_canvas.number_of_colors += 1
                     self.particle_canvas.updateParticleColors()
@@ -175,7 +151,7 @@ class Window():
                     # Clear old batch and create new vertex list and add it to batch
                     self.batch = pyglet.graphics.Batch()
                     self.vertex_list = self.createNewVertexList()
-            elif symbol == key.H:
+            elif symbol == key.S:
                 if self.particle_canvas.number_of_colors > 1:
                     self.particle_canvas.number_of_colors -= 1
                     self.particle_canvas.updateParticleColors()
@@ -183,6 +159,68 @@ class Window():
                     # Clear old batch and create new vertex list and add it to batch
                     self.batch = pyglet.graphics.Batch()
                     self.vertex_list = self.createNewVertexList()
+
+            # change dt on key press
+            elif symbol == key.E:
+                self.particle_canvas.engine.dt += 0.001
+                self.dt_label.text = "Time dt: " + str(round(self.particle_canvas.engine.dt, 3))
+            elif symbol == key.D:
+                self.particle_canvas.engine.dt -= 0.001
+                self.dt_label.text = "Time dt: " + str(round(self.particle_canvas.engine.dt, 3))
+
+            # change rMax on key press
+            elif symbol == key.R:
+                self.particle_canvas.engine.rMax += 5
+                self.rMax_label.text = "rMax: " + str(self.particle_canvas.engine.rMax)
+            elif symbol == key.F:
+                self.particle_canvas.engine.rMax -= 5
+                self.rMax_label.text = "rMax: " + str(self.particle_canvas.engine.rMax)
+
+            # change forceFactor on key press
+            elif symbol == key.T:
+                self.particle_canvas.engine.forceFactor += 0.1
+                self.forceFactor_label.text = "ForceFactor: " + str(round(self.particle_canvas.engine.forceFactor, 3))
+            elif symbol == key.G:
+                self.particle_canvas.engine.forceFactor -= 0.1
+                self.forceFactor_label.text = "ForceFactor: " + str(round(self.particle_canvas.engine.forceFactor, 3))
+
+            # change frictionHalfLife on key press
+            elif symbol == key.Y:
+                self.particle_canvas.engine.frictionHalfLife += 0.01
+                self.frictionHalfLife_label.text = "FrictionHalfLife: " + str(round(self.particle_canvas.engine.frictionHalfLife, 3))
+                self.particle_canvas.engine.calculateFrictionFactor()
+                self.frictionFactor_label.text = "FrictionFactor: " + str(round(self.particle_canvas.engine.frictionFactor, 3))
+            elif symbol == key.H:
+                self.particle_canvas.engine.frictionHalfLife -= 0.01
+                self.frictionHalfLife_label.text = "FrictionHalfLife: " + str(round(self.particle_canvas.engine.frictionHalfLife, 3))
+                self.particle_canvas.engine.calculateFrictionFactor()
+                self.frictionFactor_label.text = "FrictionFactor: " + str(round(self.particle_canvas.engine.frictionFactor, 3))
+
+        
+            # change attraction matrix on key press
+            elif symbol == key._1:
+                self.particle_canvas.updateMatrix(1)
+                self.attraction_matrix_label.text = "Attraction matrix: 1"
+            elif symbol == key._2:
+                self.particle_canvas.updateMatrix(2)
+                self.attraction_matrix_label.text = "Attraction matrix: 2"
+            elif symbol == key._3:
+                self.particle_canvas.updateMatrix(3)
+                self.attraction_matrix_label.text = "Attraction matrix: 3"
+            elif symbol == key._4:
+                self.particle_canvas.updateMatrix(4)
+                self.attraction_matrix_label.text = "Attraction matrix: 4"
+            elif symbol == key._5:
+                self.particle_canvas.updateMatrix(5)
+                self.attraction_matrix_label.text = "Attraction matrix: 5"
+            elif symbol == key._6:
+                self.particle_canvas.updateMatrix(6)
+                self.attraction_matrix_label.text = "Attraction matrix: 6"
+            # Use tilde key for randommatrix
+            elif symbol == key._0:
+                self.particle_canvas.updateMatrix(0)
+                self.attraction_matrix_label.text = "Attraction matrix: random"
+
 
         self.debug = debug
     
@@ -196,6 +234,10 @@ class Window():
         # Particles
         self.updateObjectPositions()
         self.batch.draw()
+
+        if(self.debug):
+            particle_time = time.time_ns()  / (10 ** 9)
+            print("2. Draw particles:\t\t\t\t" + str(particle_time - begin) + " seconds")
 
         # UI
         self.fps_label.draw()
@@ -222,9 +264,12 @@ class Window():
         self.adjust_number_of_colors_label.draw()
         self.number_of_colors_label.draw()
 
+        self.adjust_attraction_matrix_label.draw()
+        self.adjust_attraction_matrix_label2.draw()
+        self.attraction_matrix_label.draw()
 
         if(self.debug):
-            print("2. Render pyglet window:\t\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
+            print("3. Draw UI:\t\t\t\t\t" + str(time.time_ns()  / (10 ** 9) - particle_time) + " seconds")
         
     def createNewVertexList(self):
         vertices, colors = self.updateVertexList()
