@@ -1,38 +1,31 @@
 import pyglet
 import particle_canvas
 import window
-import engine
 import time
 
 debug_state = True
 
-cnvs = particle_canvas.ParticleCanvas(particles_per_color = 50, 
+Particle_Canvas = particle_canvas.ParticleCanvas(particles_per_color = 2500, 
                                       particle_colors = ['red', 'green', 'blue', 'orange'], 
                                       particle_size = 2, 
                                       canvas_border = False, 
                                       canvas_size = {'Width': 1200, 'Height': 1200},
                                       debug = debug_state)
 
-wndw = window.Window(particle_canvas = cnvs, 
+Window = window.Window(particle_canvas = Particle_Canvas, 
                      title = 'Particle Life', 
                      debug = debug_state)
-
-eng = engine.Engine(particle_canvas = cnvs, 
-                    debug = debug_state)
 
 def game_loop(self):
     
     # For cycle_time calculation
     begin = time.time_ns()  / (10 ** 9) # convert to seconds
 
-    # Update particle velocities
-    eng.update(opencl=True)
-
-    # Update particle positions on canvas
-    cnvs.update()
+    # Update particles on canvas
+    Particle_Canvas.update()
 
     # Render pyglet window
-    wndw.update()
+    Window.update()
 
     # Calculate cycle time
     cycle_time = (time.time_ns()  / (10 ** 9)) - begin
@@ -49,7 +42,7 @@ def game_loop(self):
         print("FPS:\t\t\t\t\t\t" + str(fps) + "\n\n")
 
 def update_FPS_label(self):
-    wndw.updateFPS(fps)
+    Window.updateFPS(fps)
 
 if __name__ == "__main__":
     pyglet.clock.schedule_interval(game_loop, 1/60.0) # update game loop 60 times per second

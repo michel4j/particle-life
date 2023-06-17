@@ -49,7 +49,7 @@ class Window():
         self.fps_label.draw()
 
         if(self.debug):
-            print("3. Render pyglet window:\t\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
+            print("2. Render pyglet window:\t\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
         
 
     def updateVertexList(self, color=True):

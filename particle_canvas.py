@@ -1,6 +1,7 @@
 import random
 import particle
 import time
+import engine
 
 class ParticleCanvas():
     
@@ -22,17 +23,14 @@ class ParticleCanvas():
         self.particles = self.generateRandomParticles()
         self.attractionMatrix = self.generateRandomAttractionMatrix()
 
+        # Engine
+        self.engine = engine.Engine(particle_canvas = self, debug = debug)
+
         self.debug = debug
 
     def update(self):
         """ Update particle canvas """
-        if(self.debug):
-            begin = time.time_ns()  / (10 ** 9)
-
-        #self.updateParticlePositions()
-
-        if(self.debug):
-            print("2. Adjust particle coordinates on canvas: \t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
+        self.engine.update()
     
     def generateRandomParticles(self):      
         """ Generate random particles for each color.
@@ -55,38 +53,6 @@ class ParticleCanvas():
             for j in range(len(self.particle_colors)):
                 matrix[i][j] = random.uniform(-1, 1)
         return matrix
-    
-    def updateParticlePositions(self):
-        """ Update particle positions """
-        for prtcl in self.particles:
-            self.updateParticlePosition(prtcl)
-
-    def updateParticlePosition(self, prtcl):
-        """ Update particle position based on velocity """
-        if(self.canvas_border):
-            # revert velocity if particle is out of bounds
-            prtcl.posX += prtcl.velX
-            if prtcl.posX > self.canvas_size['Width'] or prtcl.posX < 0:
-                prtcl.posX -= prtcl.velX
-
-            prtcl.posY += prtcl.velY
-            if prtcl.posY > self.canvas_size['Height'] or prtcl.posY < 0:
-                prtcl.posY -= prtcl.velY
-        else:
-            # wrap particle around canvas if out of bounds
-            prtcl.posX += prtcl.velX
-            if prtcl.posX > self.canvas_size['Width']:
-                prtcl.posX = 0
-            
-            if prtcl.posX < 0:
-                prtcl.posX = self.canvas_size['Width']
-
-            prtcl.posY += prtcl.velY
-            if prtcl.posY > self.canvas_size['Height']:
-                prtcl.posY = 0
-
-            if prtcl.posY < 0:
-                prtcl.posY = self.canvas_size['Height']
 
     def returnExampleAttractionMatrices(self, matrixNumber):
         """ Returns example attraction matrices """

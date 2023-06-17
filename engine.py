@@ -3,15 +3,13 @@ import time
 import pyopencl as cl
 import numpy as np
 
-
-
 class Engine():
     def __init__(self, particle_canvas, debug = False):
         # Time
         self.dt = 0.02
 
         # Particles 
-        self.rMax = 250
+        self.rMax = 50
         self.frictionHalfLife = 0.04
         self.frictionFactor = math.pow(0.5, self.dt / self.frictionHalfLife)
         self.forceFactor = 0.5
@@ -24,33 +22,19 @@ class Engine():
         self.device = self.platform.get_devices()[0]
         self.context = cl.Context([self.device])
         self.queue = cl.CommandQueue(self.context)
-
         self.program = cl.Program(self.context, self.kernelCode()).build()
 
         self.debug = debug
 
-    def update(self, opencl = True):
+    def update(self):
         """ Update particle velocities """
         if(self.debug):
             begin = time.time_ns()  / (10 ** 9)
         
-        if(opencl):
-            print("Particle[0] X velocity before: " + str(self.particle_canvas.particles[0].velX))
-            print("Particle[0] X position before: " + str(self.particle_canvas.particles[0].posX))
-            self.pyopenclUpdateParticleVelocities()
-            for prtcl in self.particle_canvas.particles:
-                self.updateParticlePosition(prtcl)
-            print("Particle[0] X velocity after: " + str(self.particle_canvas.particles[0].velX))
-            print("Particle[0] X position after: " + str(self.particle_canvas.particles[0].posX))
-        else:
-            print("Particle[0] X velocity before: " + str(self.particle_canvas.particles[0].velX))
-            print("Particle[0] X position before: " + str(self.particle_canvas.particles[0].posX))
-            self.updateParticleVelocities()
-            print("Particle[0] X velocity after: " + str(self.particle_canvas.particles[0].velX))
-            print("Particle[0] X position after: " + str(self.particle_canvas.particles[0].posX))
+        self.updateParticles()
 
         if(self.debug):
-            print("1. Calculate forces between particles:\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
+            print("1. Move particles:\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
 
     def kernelCode(self):
         return"""
@@ -135,7 +119,7 @@ class Engine():
         }
         """
 
-    def pyopenclUpdateParticleVelocities(self):
+    def updateParticles(self):
         num_particles = len(self.particle_canvas.particles)
         num_colors = len(self.particle_canvas.particle_colors)
 
@@ -169,54 +153,6 @@ class Engine():
         for i, prtcl in enumerate(self.particle_canvas.particles):
             prtcl.velX = velocities[2 * i]
             prtcl.velY = velocities[2 * i + 1]
-    
-
-    # fuck me im not writing this function myself 
-    def force(self, r, a):
-        beta = 0.3
-        if (r < beta):
-            return r / beta - 1
-        elif((beta < r) & (r < 1)):
-            return a * ( 1 - abs(2 * r - 1 - beta) / (1 - beta))
-        else:
-            return 0
-
-    def updateParticleVelocities(self):
-        for prtcl in self.particle_canvas.particles:
-            totalForceX = 0
-            totalForceY = 0
-
-            for otherPrtcl in self.particle_canvas.particles:
-                if(otherPrtcl == prtcl):
-                    continue
-                # calculte distance between particles
-                rx =  otherPrtcl.posX - prtcl.posX
-                ry =  otherPrtcl.posY - prtcl.posY
-
-                # adjust for screen wrapping
-                if abs(rx) > self.particle_canvas.canvas_size['Width'] / 2:
-                    rx = self.particle_canvas.canvas_size['Width'] - abs(rx)
-                if abs(ry) > self.particle_canvas.canvas_size['Height'] / 2:
-                    ry = self.particle_canvas.canvas_size['Height'] - abs(ry)
-                r = math.sqrt(rx**2 + ry**2)
-                # check if distance is greater than 0 and less than rMax
-                if ((r > 0) & (r < self.rMax)):
-                    f = self.force((r / self.rMax), 
-                                   self.particle_canvas.attractionMatrix
-                                        [self.particle_canvas.particle_colors.index(otherPrtcl.color)]
-                                        [self.particle_canvas.particle_colors.index(prtcl.color)])
-                    totalForceX += f * rx / r
-                    totalForceY += f * ry / r
-
-            totalForceX *= self.rMax * self.forceFactor
-            totalForceY *= self.rMax * self.forceFactor
-
-            prtcl.velX *= self.frictionFactor
-            prtcl.velY *= self.frictionFactor
-
-            prtcl.velX += totalForceX * self.dt
-            prtcl.velY += totalForceY * self.dt
-
             self.updateParticlePosition(prtcl)
 
     def updateParticlePosition(self, prtcl):
