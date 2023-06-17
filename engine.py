@@ -9,7 +9,7 @@ class Engine():
         self.dt = 0.005
 
         # Particles 
-        self.rMax = 50
+        self.rMax = 30
         self.frictionHalfLife = 0.04
         self.frictionFactor = math.pow(0.5, self.dt / self.frictionHalfLife)
         self.forceFactor = 0.5
@@ -82,15 +82,6 @@ class Engine():
                 // Calculate distance between particles
                 float rx = otherPrtclX - prtclX;
                 float ry = otherPrtclY - prtclY;
-
-                // Adjust for screen wrapping
-                if (fabs(rx) > canvasWidth / 2) {
-                    rx = canvasWidth - fabs(rx);
-                }
-                if (fabs(ry) > canvasHeight / 2) {
-                    ry = canvasHeight - fabs(ry);
-                }
-
                 float r = sqrt(rx * rx + ry * ry);
 
                 // Check if distance is greater than 0 and less than rMax
@@ -168,18 +159,21 @@ class Engine():
                 prtcl.posY -= prtcl.velY
         else:
             # wrap particle around canvas if out of bounds
-            
-            if prtcl.posX > self.particle_canvas.canvas_size['Width']:
-                prtcl.posX = 0
-            
-            elif prtcl.posX < 0:
-                prtcl.posX = self.particle_canvas.canvas_size['Width']
             prtcl.posX += prtcl.velX
-
+            if prtcl.posX > self.particle_canvas.canvas_size['Width']:
+                distance_over_border = prtcl.posX - self.particle_canvas.canvas_size['Width']
+                prtcl.posX = distance_over_border
             
-            if prtcl.posY > self.particle_canvas.canvas_size['Height']:
-                prtcl.posY = 0
+            elif prtcl.posX < -1:
+                distance_over_border = prtcl.posX
+                prtcl.posX = self.particle_canvas.canvas_size['Width'] + distance_over_border
 
-            elif prtcl.posY < 0:
-                prtcl.posY = self.particle_canvas.canvas_size['Height']
             prtcl.posY += prtcl.velY
+            if prtcl.posY > self.particle_canvas.canvas_size['Height']:
+                distance_over_border = prtcl.posY - self.particle_canvas.canvas_size['Height']
+                prtcl.posY = distance_over_border
+
+            elif prtcl.posY < -1:
+                distance_over_border = prtcl.posY
+                prtcl.posY = self.particle_canvas.canvas_size['Height'] + distance_over_border
+            
