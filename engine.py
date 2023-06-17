@@ -36,6 +36,13 @@ class Engine():
         if(self.debug):
             print("1. Move particles:\t\t\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
 
+    def calculateFrictionFactor(self):
+        """ Calculate friction factor """
+        if self.frictionHalfLife != 0:
+            self.frictionFactor = math.pow(0.5, self.dt / self.frictionHalfLife)
+        else:
+            self.frictionFactor = 0
+
     def kernelCode(self):
         return"""
         // Kernel code
