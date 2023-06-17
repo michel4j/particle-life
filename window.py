@@ -126,7 +126,6 @@ class Window():
                 # Clear old batch and create new vertex list and add it to batch
                 self.batch = pyglet.graphics.Batch()
                 self.vertex_list = self.createNewVertexList()
-                self.particle_count_label.text = "Particles: " + str(len(self.particle_canvas.particles))
             elif symbol == key.A:
                 if self.particle_canvas.total_particles > 1000:
                     self.particle_canvas.total_particles -= 1000
@@ -140,14 +139,12 @@ class Window():
                 # Clear old batch and create new vertex list and add it to batch
                 self.batch = pyglet.graphics.Batch()
                 self.vertex_list = self.createNewVertexList()
-                self.particle_count_label.text = "Particles: " + str(len(self.particle_canvas.particles))
             
             # change number of colors on key press
             elif symbol == key.W:
                 if self.particle_canvas.number_of_colors < len(self.particle_canvas.particle_colors):
                     self.particle_canvas.number_of_colors += 1
                     self.particle_canvas.updateParticleColors()
-                    self.number_of_colors_label.text = "Number of colors: " + str(self.particle_canvas.number_of_colors)
                     # Clear old batch and create new vertex list and add it to batch
                     self.batch = pyglet.graphics.Batch()
                     self.vertex_list = self.createNewVertexList()
@@ -155,7 +152,6 @@ class Window():
                 if self.particle_canvas.number_of_colors > 1:
                     self.particle_canvas.number_of_colors -= 1
                     self.particle_canvas.updateParticleColors()
-                    self.number_of_colors_label.text = "Number of colors: " + str(self.particle_canvas.number_of_colors)
                     # Clear old batch and create new vertex list and add it to batch
                     self.batch = pyglet.graphics.Batch()
                     self.vertex_list = self.createNewVertexList()
@@ -163,38 +159,26 @@ class Window():
             # change dt on key press
             elif symbol == key.E:
                 self.particle_canvas.engine.dt += 0.001
-                self.dt_label.text = "Time dt: " + str(round(self.particle_canvas.engine.dt, 3))
             elif symbol == key.D:
                 self.particle_canvas.engine.dt -= 0.001
-                self.dt_label.text = "Time dt: " + str(round(self.particle_canvas.engine.dt, 3))
 
             # change rMax on key press
             elif symbol == key.R:
                 self.particle_canvas.engine.rMax += 5
-                self.rMax_label.text = "rMax: " + str(self.particle_canvas.engine.rMax)
             elif symbol == key.F:
                 self.particle_canvas.engine.rMax -= 5
-                self.rMax_label.text = "rMax: " + str(self.particle_canvas.engine.rMax)
 
             # change forceFactor on key press
             elif symbol == key.T:
                 self.particle_canvas.engine.forceFactor += 0.1
-                self.forceFactor_label.text = "ForceFactor: " + str(round(self.particle_canvas.engine.forceFactor, 3))
             elif symbol == key.G:
                 self.particle_canvas.engine.forceFactor -= 0.1
-                self.forceFactor_label.text = "ForceFactor: " + str(round(self.particle_canvas.engine.forceFactor, 3))
 
             # change frictionHalfLife on key press
             elif symbol == key.Y:
                 self.particle_canvas.engine.frictionHalfLife += 0.01
-                self.frictionHalfLife_label.text = "FrictionHalfLife: " + str(round(self.particle_canvas.engine.frictionHalfLife, 3))
-                self.particle_canvas.engine.calculateFrictionFactor()
-                self.frictionFactor_label.text = "FrictionFactor: " + str(round(self.particle_canvas.engine.frictionFactor, 3))
             elif symbol == key.H:
                 self.particle_canvas.engine.frictionHalfLife -= 0.01
-                self.frictionHalfLife_label.text = "FrictionHalfLife: " + str(round(self.particle_canvas.engine.frictionHalfLife, 3))
-                self.particle_canvas.engine.calculateFrictionFactor()
-                self.frictionFactor_label.text = "FrictionFactor: " + str(round(self.particle_canvas.engine.frictionFactor, 3))
 
         
             # change attraction matrix on key press
@@ -203,31 +187,25 @@ class Window():
                 self.attraction_matrix_label.text = "Attraction matrix: snakes"
                 self.particle_canvas.engine.frictionHalfLife = 0.01
                 self.particle_canvas.engine.calculateFrictionFactor()
-                self.frictionHalfLife_label.text = "FrictionHalfLife: " + str(round(self.particle_canvas.engine.frictionHalfLife, 3))
-                self.frictionFactor_label.text = "FrictionFactor: " + str(round(self.particle_canvas.engine.frictionFactor, 3))
                 self.particle_canvas.forceFactor = 0.1
-                self.forceFactor_label.text = "ForceFactor: " + str(round(self.particle_canvas.forceFactor, 3))
                 self.particle_canvas.engine.rMax = 50
-                self.rMax_label.text = "rMax: " + str(self.particle_canvas.engine.rMax)
                 self.particle_canvas.engine.dt = 0.002
-                self.dt_label.text = "Time dt: " + str(round(self.particle_canvas.engine.dt, 3))
 
             elif symbol == key._2:
                 self.particle_canvas.updateMatrix(2)
-                self.attraction_matrix_label.text = "Attraction matrix: 2"
+                self.attraction_matrix_label.text = "Attraction matrix: random fun"
             elif symbol == key._3:
                 self.particle_canvas.updateMatrix(3)
-                self.attraction_matrix_label.text = "Attraction matrix: 3"
+                self.attraction_matrix_label.text = "Attraction matrix: chains 1"
             elif symbol == key._4:
                 self.particle_canvas.updateMatrix(4)
-                self.attraction_matrix_label.text = "Attraction matrix: 4"
+                self.attraction_matrix_label.text = "Attraction matrix: chains 2"
             elif symbol == key._5:
                 self.particle_canvas.updateMatrix(5)
-                self.attraction_matrix_label.text = "Attraction matrix: 5"
+                self.attraction_matrix_label.text = "Attraction matrix: chains 3"
             elif symbol == key._6:
                 self.particle_canvas.updateMatrix(6)
-                self.attraction_matrix_label.text = "Attraction matrix: 6"
-            # Use tilde key for randommatrix
+                self.attraction_matrix_label.text = "Attraction matrix:rand symmetry"
             elif symbol == key._0:
                 self.particle_canvas.updateMatrix(0)
                 self.attraction_matrix_label.text = "Attraction matrix: random"
@@ -251,6 +229,7 @@ class Window():
             print("2. Draw particles:\t\t\t\t" + str(particle_time - begin) + " seconds")
 
         # UI
+        self.updateLabelText()
         self.fps_label.draw()
 
         self.adjust_particle_count_label.draw()
