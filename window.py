@@ -21,19 +21,47 @@ class Window():
         vertices, colors = self.updateVertexList()
         self.vertex_list = self.batch.add(len(self.particle_canvas.particles) * 4, pyglet.gl.GL_QUADS, None,
                                                        ('v2f', vertices),
-                                                       ('c3B', colors),)  
-        # Create FPS label
-        self.fps_label = pyglet.text.Label("FPS: 0000",
-                        font_size=10,
-                        x=36, y=self.window.height - 23,
-                        anchor_x='center', anchor_y='center')
+                                                       ('c3B', colors),) 
 
-        # Create number of particles label
-        self.particle_count_label = pyglet.text.Label(self.numberOfParticlesText(),
-                        font_size=10,
-                        x=54, y=self.window.height - 7,
-                        anchor_x='center', anchor_y='center')
+        # UI Shit
+        self.space_between_labels = 14
+        self.font_size = 10 
         
+        # Create number of particles label
+        self.particle_count_label = pyglet.text.Label("Particles: " + str(len(self.particle_canvas.particles)),
+                        font_size=self.font_size,
+                        x=2, y=self.window.height - self.space_between_labels)
+        
+        # Create FPS label
+        self.fps_label = pyglet.text.Label("FPS: ",
+                         font_size=self.font_size,
+                         x=2, y=self.particle_count_label.y - self.space_between_labels)
+        
+        # Create dt label
+        self.dt_label = pyglet.text.Label("Time dt: " + str(self.particle_canvas.engine.dt), 
+                        font_size=self.font_size,
+                        x=2, y=self.fps_label.y - (self.space_between_labels * 2))
+
+        # Create rMax label
+        self.rMax_label = pyglet.text.Label("rMax: " + str(self.particle_canvas.engine.rMax), 
+                        font_size=self.font_size,
+                        x=2, y=self.dt_label.y - self.space_between_labels)
+        
+        # Create forceFactor label
+        self.forceFactor_label = pyglet.text.Label("ForceFactor: " + str(self.particle_canvas.engine.forceFactor),
+                        font_size=self.font_size,
+                        x=2, y=self.rMax_label.y - self.space_between_labels)
+        
+        # Create frictionHalfLife label
+        self.frictionHalfLife_label = pyglet.text.Label("FrictionHalfLife: " + str(self.particle_canvas.engine.frictionHalfLife),
+                        font_size=self.font_size,
+                        x=2, y=self.forceFactor_label.y - self.space_between_labels)
+        
+        # Create frictionFactor label
+        self.frictionFactor_label = pyglet.text.Label("FrictionFactor: " + str(round(self.particle_canvas.engine.frictionFactor, 3)),
+                        font_size=self.font_size,
+                        x=2, y=self.frictionHalfLife_label.y - self.space_between_labels)
+
         self.debug = debug
     
     def update(self):
@@ -42,10 +70,20 @@ class Window():
             begin = time.time_ns()  / (10 ** 9)
         
         self.window.clear()
+        
+        # Particles
         self.updateObjectPositions()
         self.batch.draw()
+
+        # UI
         self.particle_count_label.draw()
         self.fps_label.draw()
+        self.dt_label.draw()
+        self.rMax_label.draw()
+        self.forceFactor_label.draw()
+        self.frictionHalfLife_label.draw()
+        self.frictionFactor_label.draw()
+
 
         if(self.debug):
             print("2. Render pyglet window:\t\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
@@ -69,30 +107,9 @@ class Window():
         else:
             return vertices
 
-    def numberOfParticlesText(self):
-        """ Returns text for number of particles label """	
-        number_of_particles = len(self.particle_canvas.particles)
-        if number_of_particles < 10:
-            return "Particles: 0000" + str(number_of_particles)
-        elif number_of_particles < 100:
-            return "Particles: 000" + str(number_of_particles)
-        elif number_of_particles < 1000:
-            return "Particles: 00" + str(number_of_particles)
-        elif number_of_particles < 10000:
-            return "Particles: 0" + str(number_of_particles)
-        else:
-            return "Particles: " + str(number_of_particles)
-    
     def updateFPS(self, fps):
         """ Update FPS label """	
-        if fps < 10:
-            self.fps_label.text = "FPS: 000" + str(fps)
-        elif fps < 100:
-            self.fps_label.text = "FPS: 00" + str(fps)
-        elif fps < 1000:
-            self.fps_label.text = "FPS: 0" + str(fps)
-        else:
-            self.fps_label.text = "FPS: " + str(fps)
+        self.fps_label.text = "FPS: " + str(fps)
 
     def updateObjectPositions(self):	
         """ Update vertex list for particles """
