@@ -166,7 +166,8 @@ class Window():
             elif symbol == key.R:
                 self.particle_canvas.engine.rMax += 5
             elif symbol == key.F:
-                self.particle_canvas.engine.rMax -= 5
+                if self.particle_canvas.engine.rMax > 5:
+                    self.particle_canvas.engine.rMax -= 5
 
             # change forceFactor on key press
             elif symbol == key.T:
@@ -177,8 +178,10 @@ class Window():
             # change frictionHalfLife on key press
             elif symbol == key.Y:
                 self.particle_canvas.engine.frictionHalfLife += 0.01
+                self.particle_canvas.engine.frictionHalfLife = round(self.particle_canvas.engine.frictionHalfLife, 2)
             elif symbol == key.H:
                 self.particle_canvas.engine.frictionHalfLife -= 0.01
+                self.particle_canvas.engine.frictionHalfLife = round(self.particle_canvas.engine.frictionHalfLife, 2)
 
         
             # change attraction matrix on key press
