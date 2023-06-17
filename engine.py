@@ -76,7 +76,8 @@ class Engine():
                                             float dt,
                                             float canvasWidth,
                                             float canvasHeight,
-                                            __global float* attractionMatrix) {
+                                            __global float* attractionMatrix,
+                                            int numColors) {
             int gid = get_global_id(0);
 
             float totalForceX = 0;
@@ -110,7 +111,7 @@ class Engine():
 
                 // Check if distance is greater than 0 and less than rMax
                 if (r > 0 && r < rMax) {
-                    float a = attractionMatrix[prtclColorIndex * numParticles + otherPrtclColorIndex];
+                    float a = attractionMatrix[prtclColorIndex * numColors + otherPrtclColorIndex]; 
                     float f = force(r / rMax, a);
                     totalForceX += f * rx / r;
                     totalForceY += f * ry / r;
@@ -136,6 +137,7 @@ class Engine():
 
     def pyopenclUpdateParticleVelocities(self):
         num_particles = len(self.particle_canvas.particles)
+        num_colors = len(self.particle_canvas.particle_colors)
 
         positions = np.zeros(2 * num_particles, dtype=np.float32)
         velocities = np.zeros(2 * num_particles, dtype=np.float32)
@@ -160,7 +162,7 @@ class Engine():
                                             np.float32(self.forceFactor), np.float32(self.frictionFactor), np.float32(self.dt),
                                             np.float32(self.particle_canvas.canvas_size['Width']),
                                             np.float32(self.particle_canvas.canvas_size['Height']),
-                                            attraction_matrix_buffer)
+                                            attraction_matrix_buffer, np.int32(num_colors))
 
         cl.enqueue_copy(self.queue, velocities, velocities_buffer)
 
