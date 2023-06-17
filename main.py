@@ -3,13 +3,14 @@ import particle_canvas
 import window
 import time
 
-debug_state = False
+debug_state = True
 
 Particle_Canvas = particle_canvas.ParticleCanvas(total_particles = 10000, 
-                                                 particle_colors = ['red', 'blue', 'green', 'purple'], 
+                                                 particle_colors = ['red', 'blue', 'green', 'purple', 'yellow', 'white'], 
+                                                 number_of_colors = 4,
                                                  particle_size = 2, 
                                                  canvas_border = False, 
-                                                 canvas_size = {'Width': 1200, 'Height': 1200},
+                                                 canvas_size = {'Width': 1000, 'Height': 1000},
                                                  debug = debug_state)
 
 Window = window.Window(particle_canvas = Particle_Canvas, 

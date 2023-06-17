@@ -29,7 +29,7 @@ class Window():
         
 
         # Create label how to adjust number of particles
-        self.adjust_particle_count_label = pyglet.text.Label("Q/E to increase/decrease",
+        self.adjust_particle_count_label = pyglet.text.Label("Q/A to increase/decrease",
                         font_size=self.font_size,
                         x=2, y=self.fps_label.y - (self.space_between_labels*2))
         # Create number of particles label
@@ -86,6 +86,15 @@ class Window():
         self.frictionFactor_label = pyglet.text.Label("FrictionFactor: " + str(round(self.particle_canvas.engine.frictionFactor, 3)),
                         font_size=self.font_size,
                         x=2, y=self.adjust_frictionFactor_label2.y - self.space_between_labels)
+        
+        # Create label how to adjust number of colors
+        self.adjust_number_of_colors_label = pyglet.text.Label("Y/H to increase/decrease",
+                        font_size=self.font_size,
+                        x=2, y=self.frictionFactor_label.y - (self.space_between_labels*2))
+        # Create number of colors label
+        self.number_of_colors_label = pyglet.text.Label("Number of colors: " + str(self.particle_canvas.number_of_colors),
+                        font_size=self.font_size,
+                        x=2, y=self.adjust_number_of_colors_label.y - self.space_between_labels)
 
         @self.window.event
         def on_key_press(symbol, modifiers):
@@ -157,6 +166,24 @@ class Window():
                 self.particle_canvas.engine.calculateFrictionFactor()
                 self.frictionFactor_label.text = "FrictionFactor: " + str(round(self.particle_canvas.engine.frictionFactor, 3))
 
+            # change number of colors on key press
+            elif symbol == key.Y:
+                if self.particle_canvas.number_of_colors < len(self.particle_canvas.particle_colors):
+                    self.particle_canvas.number_of_colors += 1
+                    self.particle_canvas.updateParticleColors()
+                    self.number_of_colors_label.text = "Number of colors: " + str(self.particle_canvas.number_of_colors)
+                    # Clear old batch and create new vertex list and add it to batch
+                    self.batch = pyglet.graphics.Batch()
+                    self.vertex_list = self.createNewVertexList()
+            elif symbol == key.H:
+                if self.particle_canvas.number_of_colors > 1:
+                    self.particle_canvas.number_of_colors -= 1
+                    self.particle_canvas.updateParticleColors()
+                    self.number_of_colors_label.text = "Number of colors: " + str(self.particle_canvas.number_of_colors)
+                    # Clear old batch and create new vertex list and add it to batch
+                    self.batch = pyglet.graphics.Batch()
+                    self.vertex_list = self.createNewVertexList()
+
         self.debug = debug
     
     def update(self):
@@ -191,6 +218,9 @@ class Window():
         self.adjust_frictionFactor_label.draw()
         self.adjust_frictionFactor_label2.draw()
         self.frictionFactor_label.draw()
+
+        self.adjust_number_of_colors_label.draw()
+        self.number_of_colors_label.draw()
 
 
         if(self.debug):

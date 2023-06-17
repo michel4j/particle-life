@@ -8,6 +8,7 @@ class ParticleCanvas():
     def __init__(self, 
                  total_particles = 50, 
                  particle_colors = ['red', 'green', 'blue'], 
+                 number_of_colors = 3,
                  canvas_border = False, 
                  particle_size = 2, 
                  canvas_size = {'Width': 1200, 'Height': 1200}, 
@@ -19,8 +20,10 @@ class ParticleCanvas():
 
         # Particles
         self.total_particles = total_particles
-        self.particles_per_color = round(self.total_particles / len(particle_colors))
+        self.number_of_colors = number_of_colors
+        self.particles_per_color = round(self.total_particles / self.number_of_colors)
         self.particle_colors = particle_colors
+        self.selected_colors = self.particle_colors[:self.number_of_colors]
         self.particle_size = particle_size
         self.particles = self.generateRandomParticles()
         self.attractionMatrix = self.returnExampleAttractionMatrices(2)
@@ -34,9 +37,14 @@ class ParticleCanvas():
         """ Update particle canvas """
         self.engine.update()
 
+    def updateParticleColors(self):
+        """ Update particle colors """
+        self.selected_colors = self.particle_colors[:self.number_of_colors]
+        self.updateParticleNumber() 
+
     def updateParticleNumber(self):
         """ Update total number of particles """
-        self.particles_per_color = round(self.total_particles / len(self.particle_colors))
+        self.particles_per_color = round(self.total_particles / self.number_of_colors)
         self.particles = self.generateRandomParticles()
     
     def generateRandomParticles(self):      
@@ -44,7 +52,7 @@ class ParticleCanvas():
             Returns list of generatd particles""" 
         particles = []
 
-        for color in self.particle_colors:
+        for color in self.selected_colors:
             for i in range(self.particles_per_color):
                 posX = random.uniform(self.UI_space, self.canvas_size['Width'] + self.UI_space)
                 posY = random.uniform(0, self.canvas_size['Height'])
@@ -66,40 +74,52 @@ class ParticleCanvas():
         matrix = []
         match matrixNumber:
             case 1:
-                matrix =[   [   1,   0.8,    0.6,   0.4], 
-                            [ 0.8,   1,      0.8,   0.6],
-                            [ 0.6,   0.8,      1,   0.8],
-                            [ 0.4,   0.6,    0.8,   1  ]]
+                matrix =[   [   1,   0.8,    0.6,   0.4,    0.2,    0.1], 
+                            [ 0.8,   1,      0.8,   0.6,    0.4,    0.2],
+                            [ 0.6,   0.8,      1,   0.8,    0.6,    0.4],
+                            [ 0.4,   0.6,    0.8,   1  ,    0.8,    0.6],
+                            [ 0.2,   0.4,    0.6,   0.8,    1  ,    0.8],
+                            [ 0.1,   0.2,    0.4,   0.6,    0.8,    1  ]]
                 
             case 2:
-                matrix =[   [ 0.3,  -0.5,   -0.3,   0.3], 
-                            [   1,   0.5,      1,   0.5],
-                            [-0.5,     1,    0.5,    -1],
-                            [-0.3,     1,    0.5,   0.8]]
+                matrix =[   [ 0.3,  -0.5,   -0.3,   0.3,    0.5,    0.3],
+                            [   1,   0.5,      1,   0.5,    0.3,    0.5],
+                            [-0.5,     1,    0.5,    -1,    0.5,    0.3],
+                            [-0.3,     1,    0.5,   0.8,    0.5,    0.3],
+                            [ 0.3,   0.5,    0.8,   0.5,    0.3,    0.5],
+                            [ 0.5,   0.3,    0.5,   0.3,    0.5,    0.3]]
                 
             case 3:
-                matrix =[   [  -1,   0.8,    0.6,   0.4], 
-                            [ 0.8,    -1,    0.8,   0.6],
-                            [ 0.6,   0.8,     -1,   0.8],
-                            [ 0.4,   0.6,    0.8,    -1]]
+                matrix =[   [  -1,   0.8,    0.6,   0.4,    0.2,    0.1], 
+                            [ 0.8,    -1,    0.8,   0.6,    0.4,    0.2],
+                            [ 0.6,   0.8,     -1,   0.8,    0.6,    0.4],
+                            [ 0.4,   0.6,    0.8,    -1,    0.8,    0.6],
+                            [ 0.2,   0.4,    0.6,   0.8,     -1,    0.8],
+                            [ 0.1,   0.2,    0.4,   0.6,    0.8,     -1]]
                 
             case 4:
-                matrix =[   [  -1,   0.8,    0.6,   0.4], 
-                            [ 0.8,    -1,   -0.8,   0.6],
-                            [-0.6,   0.8,     -1,   0.8],
-                            [ 0.4,  -0.6,    0.8,    -1]]
+                matrix =[   [  -1,   0.8,    0.6,   0.4,    0.2,    0.1], 
+                            [ 0.8,    -1,   -0.8,   0.6,    0.4,    0.2],
+                            [-0.6,   0.8,     -1,   0.8,    0.6,    0.4],
+                            [ 0.4,  -0.6,    0.8,    -1,    0.8,    0.6],
+                            [ 0.2,   0.4,    0.6,   0.8,     -1,    0.8],
+                            [ 0.1,   0.2,    0.4,   0.6,    0.8,     -1]]
             
             case 5:
-                matrix =[   [   1,   0.2,      0,  -0.2], 
-                            [-0.2,     1,    0.2,     0],
-                            [   0,  -0.2,      1,   0.2],
-                            [ 0.2,     0,   -0.2,     1]]
+                matrix =[   [   1,   0.2,      0,  -0.2,   -0.2,      0], 
+                            [-0.2,     1,    0.2,     0,      0,   -0.2],
+                            [   0,  -0.2,      1,   0.2,      0,      0],
+                            [ 0.2,     0,   -0.2,     1,    0.2,      0],
+                            [ 0.2,     0,      0,   0.2,      1,   -0.2],
+                            [   0,   0.2,      0,     0,   -0.2,      1]]
                 
             case 6:
-                matrix =[   [   1,     1,      0,     0], 
-                            [   1,    -1,     -1,     0],
-                            [   0,    -1,     -1,     1],
-                            [   0,     0,      1,     1]]
+                matrix =[   [   1,     1,      0,     0,      0,      0],
+                            [   1,    -1,     -1,     0,      0,      0],
+                            [   0,    -1,     -1,     1,      0,      0],
+                            [   0,     0,      1,     1,     -1,      0],
+                            [   0,     0,      0,    -1,     -1,      1],
+                            [   0,     0,      0,     0,      1,      1]]
                 
             case _:
                 matrix = self.generateRandomAttractionMatrix()
