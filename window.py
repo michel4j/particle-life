@@ -14,7 +14,7 @@ class Window():
         self.title = title
         self.window = pyglet.window.Window(self.window_size['Width'] + particle_canvas.UI_space, self.window_size['Height'], self.title)
         
-        # Pyglet rendering
+        # Pyglet particle rendering
         self.batch = pyglet.graphics.Batch()
         self.vertex_list = self.createNewVertexList()
 
@@ -22,8 +22,12 @@ class Window():
         self.space_between_labels = 14
         self.font_size = 10 
         self.selected_attraction_matrix_element = [0,0]
+        self.first_bracket_space = 10
+        self.bracket_space = 27
         self.ui_batch = pyglet.graphics.Batch()
-        
+
+        # All labels
+
         # Create FPS label
         self.fps_label = pyglet.text.Label("FPS: ",
                          font_size=self.font_size,
@@ -54,7 +58,7 @@ class Window():
                         x=2, y=self.number_of_colors_label.y - self.space_between_labels)
         
         # Create attraction matrix label
-        self.attraction_matrix_label = pyglet.text.Label("Attraction matrix: 2",
+        self.attraction_matrix_label = pyglet.text.Label("Attraction matrix: random fun",
                         font_size=self.font_size,
                         batch=self.ui_batch,
                         x=2, y=self.adjust_number_of_colors_label.y - (self.space_between_labels*2))
@@ -68,12 +72,77 @@ class Window():
                         font_size=self.font_size,
                         batch=self.ui_batch,
                         x=2, y=self.adjust_attraction_matrix_label.y - self.space_between_labels)
-    
+
+        # Create attraction matrix label
+        self.adjust_attraction_matrix_label3 = pyglet.text.Label("Manually adjust attraction matrix",
+                        font_size=self.font_size-1,
+                        batch=self.ui_batch,
+                        x=2, y=self.adjust_attraction_matrix_label2.y - (self.space_between_labels*2))
+        
+        # Create label how to adjust attraction matrix
+        self.adjust_attraction_matrix_label4 = pyglet.text.Label("Arrow keys to move",
+                        font_size=self.font_size,
+                        batch=self.ui_batch,
+                        x=2, y=self.adjust_attraction_matrix_label3.y - self.space_between_labels)
+        
+        # Create 2nd label how to adjust attraction matrix
+        self.adjust_attraction_matrix_label5 = pyglet.text.Label("+/- to increase/decrease",
+                        font_size=self.font_size,
+                        batch=self.ui_batch,
+                        x=2, y=self.adjust_attraction_matrix_label4.y - self.space_between_labels)
+
+        # Example of matrix to show how it works
+        
+        #  |  R |  O |  Y |  G |  B |  P
+        # R| 0.3|-0.5|-0.3| 0.3| 0.5| 0.3
+        # O|-0.5| 0.3|-0.5|-0.3|-0.5|-0.3
+        # Y|-0.3|-0.5| 0.3|-0.5|-0.3|-0.5
+        # G| 0.3|-0.3|-0.5| 0.3|-0.5|-0.3
+        # B| 0.5|-0.5|-0.3|-0.5| 0.3|-0.5
+        # P| 0.3|-0.3|-0.5|-0.3|-0.5| 0.3
+
+        # Create color row 
+        self.color_row  = self.create_matrix_label_color("R", x=2 + self.bracket_space * 1 - 5, y=self.adjust_attraction_matrix_label5.y - self.space_between_labels*2)
+        self.color_row2 = self.create_matrix_label_color("O", x=2 + self.bracket_space * 2 - 5, y=self.color_row.y)
+        self.color_row3 = self.create_matrix_label_color("Y", x=2 + self.bracket_space * 3 - 5, y=self.color_row.y)
+        self.color_row4 = self.create_matrix_label_color("G", x=2 + self.bracket_space * 4 - 5, y=self.color_row.y)
+        self.color_row5 = self.create_matrix_label_color("B", x=2 + self.bracket_space * 5 - 5, y=self.color_row.y)
+        self.color_row6 = self.create_matrix_label_color("P", x=2 + self.bracket_space * 6 - 5, y=self.color_row.y)
+
+        # Create other rows
+        self.row1_color = self.create_matrix_label_color("R", x=2, y=self.color_row.y - self.space_between_labels)
+        self.row2_color = self.create_matrix_label_color("O", x=2, y=self.row1_color.y - self.space_between_labels)
+        self.row3_color = self.create_matrix_label_color("Y", x=2, y=self.row2_color.y - self.space_between_labels)
+        self.row4_color = self.create_matrix_label_color("G", x=2, y=self.row3_color.y - self.space_between_labels)
+        self.row5_color = self.create_matrix_label_color("B", x=2, y=self.row4_color.y - self.space_between_labels)
+        self.row6_color = self.create_matrix_label_color("P", x=2, y=self.row5_color.y - self.space_between_labels)
+        
+        # Create brackets 
+        for i in range(7):
+            if i == 0:
+                for j in range(7):
+                    self.create_matrix_label_bracket(x=2 + self.first_bracket_space, y=self.color_row.y - self.space_between_labels * j)
+            else:
+                for j in range(7):
+                    self.create_matrix_label_bracket(x=2 + self.first_bracket_space + self.bracket_space * i, y=self.color_row.y - self.space_between_labels * j)
+
+        # Create matrix elements
+        self.element_labels = []
+        for i in range(6):
+            element_row = []
+            for j in range(6):
+                element_row.append(self.create_matrix_label_element(i, j, x=2 + self.first_bracket_space + self.bracket_space * j + 15, y=self.row1_color.y - self.space_between_labels * i))
+                if i == self.selected_attraction_matrix_element[0] and j == self.selected_attraction_matrix_element[1]:
+                    element_row[j].color = (255, 0, 0, 255)
+            self.element_labels.append(element_row)
+
+
+
         # Create dt label
         self.dt_label = pyglet.text.Label("Time dt: " + str(round(self.particle_canvas.engine.dt, 3)), 
                         font_size=self.font_size,
                         batch=self.ui_batch,
-                        x=2, y=self.adjust_attraction_matrix_label2.y - (self.space_between_labels*3))
+                        x=2, y=self.row6_color.y - (self.space_between_labels*3))
         # Create label how to adjust dt
         self.adjust_dt_label = pyglet.text.Label("E/D to increase/decrease",
                         font_size=self.font_size,
@@ -129,55 +198,6 @@ class Window():
                         font_size=self.font_size,
                         batch=self.ui_batch,
                         x=2, y=self.adjust_frictionFactor_label.y - self.space_between_labels)
-        
-        
-        # Example of matrix to show how it works
-        
-        #  |  R |  O |  Y |  G |  B |  P
-        # R| 0.3|-0.5|-0.3| 0.3| 0.5| 0.3
-        # O|-0.5| 0.3|-0.5|-0.3|-0.5|-0.3
-        # Y|-0.3|-0.5| 0.3|-0.5|-0.3|-0.5
-        # G| 0.3|-0.3|-0.5| 0.3|-0.5|-0.3
-        # B| 0.5|-0.5|-0.3|-0.5| 0.3|-0.5
-        # P| 0.3|-0.3|-0.5|-0.3|-0.5| 0.3
-
-        self.first_bracket_space = 10
-        self.bracket_space = 27
-
-        # Create color row 
-        self.color_row  = self.create_matrix_label_color("R", x=2 + self.bracket_space * 1 - 5, y=self.adjust_frictionFactor_label2.y - self.space_between_labels * 2)
-        self.color_row2 = self.create_matrix_label_color("O", x=2 + self.bracket_space * 2 - 5, y=self.color_row.y)
-        self.color_row3 = self.create_matrix_label_color("Y", x=2 + self.bracket_space * 3 - 5, y=self.color_row.y)
-        self.color_row4 = self.create_matrix_label_color("G", x=2 + self.bracket_space * 4 - 5, y=self.color_row.y)
-        self.color_row5 = self.create_matrix_label_color("B", x=2 + self.bracket_space * 5 - 5, y=self.color_row.y)
-        self.color_row6 = self.create_matrix_label_color("P", x=2 + self.bracket_space * 6 - 5, y=self.color_row.y)
-
-        # Create other rows
-        self.row1_color = self.create_matrix_label_color("R", x=2, y=self.color_row.y - self.space_between_labels)
-        self.row2_color = self.create_matrix_label_color("O", x=2, y=self.row1_color.y - self.space_between_labels)
-        self.row3_color = self.create_matrix_label_color("Y", x=2, y=self.row2_color.y - self.space_between_labels)
-        self.row4_color = self.create_matrix_label_color("G", x=2, y=self.row3_color.y - self.space_between_labels)
-        self.row5_color = self.create_matrix_label_color("B", x=2, y=self.row4_color.y - self.space_between_labels)
-        self.row6_color = self.create_matrix_label_color("P", x=2, y=self.row5_color.y - self.space_between_labels)
-        
-        # Create brackets 
-        for i in range(7):
-            if i == 0:
-                for j in range(7):
-                    self.create_matrix_label_bracket(x=2 + self.first_bracket_space, y=self.color_row.y - self.space_between_labels * j)
-            else:
-                for j in range(7):
-                    self.create_matrix_label_bracket(x=2 + self.first_bracket_space + self.bracket_space * i, y=self.color_row.y - self.space_between_labels * j)
-
-        # Create matrix elements
-        self.element_labels = []
-        for i in range(6):
-            element_row = []
-            for j in range(6):
-                element_row.append(self.create_matrix_label_element(i, j, x=2 + self.first_bracket_space + self.bracket_space * j + 15, y=self.row1_color.y - self.space_between_labels * i))
-                if i == self.selected_attraction_matrix_element[0] and j == self.selected_attraction_matrix_element[1]:
-                    element_row[j].color = (255, 0, 0, 255)
-            self.element_labels.append(element_row)
 
         
         @self.window.event
@@ -285,6 +305,33 @@ class Window():
                 self.attraction_matrix_label.text = "Attraction matrix: random"
 
 
+            # change selected element in attraction matrix
+            elif symbol == key.UP:
+                if self.selected_attraction_matrix_element[0] > 0:
+                    self.selected_attraction_matrix_element[0] -= 1
+            elif symbol == key.DOWN:
+                if self.selected_attraction_matrix_element[0] < 5:
+                    self.selected_attraction_matrix_element[0] += 1
+            elif symbol == key.LEFT:
+                if self.selected_attraction_matrix_element[1] > 0:
+                    self.selected_attraction_matrix_element[1] -= 1
+            elif symbol == key.RIGHT:
+                if self.selected_attraction_matrix_element[1] < 5:
+                    self.selected_attraction_matrix_element[1] += 1
+
+            # change value of selected element in attraction matrix. move up by 0.1 if equals is pressed. move down by 0.1 if minus is pressed
+            elif symbol == key.EQUAL:
+                if self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] < 1:
+                    self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] += 0.1
+                    self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] = round(self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]], 1)
+            elif symbol == key.MINUS:
+                if self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] > -1:
+                    self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] -= 0.1
+                    self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] = round(self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]], 1)
+
+
+
+
         self.debug = debug
     
     def update(self):
@@ -305,8 +352,6 @@ class Window():
         # UI
         self.updateLabelText()
         self.ui_batch.draw()
-
-
 
         if(self.debug):
             print("3. Draw UI:\t\t\t\t\t" + str(time.time_ns()  / (10 ** 9) - particle_time) + " seconds")
@@ -347,6 +392,8 @@ class Window():
             for j in range(6):
                 if i == self.selected_attraction_matrix_element[0] and j == self.selected_attraction_matrix_element[1]:
                     self.element_labels[i][j].color = (255, 0, 0, 255)
+                else:
+                    self.element_labels[i][j].color = (255, 255, 255, 255)
                 self.element_labels[i][j].text = str(self.particle_canvas.attraction_matrix[i][j])
         
 
