@@ -12,6 +12,7 @@ class ParticleCanvas():
                  canvas_border = False, 
                  particle_size = 2, 
                  canvas_size = {'Width': 1200, 'Height': 1200}, 
+                 current_demo_matrix = 0,
                  debug = False):
         # Canvas
         self.canvas_border = canvas_border
@@ -27,6 +28,8 @@ class ParticleCanvas():
         self.particle_size = particle_size
         self.particles = self.generateRandomParticles()
         self.attraction_matrix = self.returnExampleAttractionMatrices(2)
+        self.current_demo_matrix = current_demo_matrix
+        self.key_press = current_demo_matrix
 
         # Engine
         self.engine = engine.Engine(particle_canvas = self, debug = debug)

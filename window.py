@@ -25,6 +25,7 @@ class Window():
         self.first_bracket_space = 10
         self.bracket_space = 27
         self.ui_batch = pyglet.graphics.Batch()
+        self.demo_mode = False
 
         # All labels
 
@@ -210,8 +211,16 @@ class Window():
                         batch=self.ui_batch,
                         x=2, y=self.debug_label.y - self.space_between_labels)
         
-        
-
+        # Create label to turn on/off demo mode
+        self.demo_label = pyglet.text.Label("Demo mode: " + str(self.demo_mode),
+                        font_size=self.font_size,
+                        batch=self.ui_batch,
+                        x=2, y=self.adjust_debug_label.y - (self.space_between_labels*2))
+        # Create label how to turn on/off demo mode
+        self.adjust_demo_label = pyglet.text.Label("Press O to turn on/off",
+                        font_size=self.font_size,
+                        batch=self.ui_batch,
+                        x=2, y=self.demo_label.y - self.space_between_labels)
         
         @self.window.event
         def on_key_press(symbol, modifiers):
@@ -346,14 +355,17 @@ class Window():
             elif symbol == key.P:
                 if self.debug:
                     self.debug = False
-                    self.particle_canvas.debug = False
                     self.particle_canvas.engine.debug = False
                 else:
                     self.debug = True
-                    self.particle_canvas.debug = True
                     self.particle_canvas.engine.debug = True
 
-
+            # turn on/off demo mode
+            elif symbol == key.O:
+                if self.demo_mode:
+                    self.demo_mode = False
+                else:
+                    self.demo_mode = True
 
         self.debug = debug
     
@@ -418,7 +430,8 @@ class Window():
                 else:
                     self.element_labels[i][j].color = (255, 255, 255, 255)
                 self.element_labels[i][j].text = str(self.particle_canvas.attraction_matrix[i][j])
-        
+        self.debug_label.text = "Debug mode: " + str(self.debug)
+        self.demo_label.text = "Demo mode: " + str(self.demo_mode)
 
     def createNewVertexList(self):
         vertices, colors = self.updateVertexList()
