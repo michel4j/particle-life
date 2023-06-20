@@ -125,7 +125,7 @@ class ParticleCanvas():
             # Write a loop that generates a random symmetric matrix
             # generate random symmetric matrix, split diagonally from top left to bottom right
             case 6:
-                matrix = [[1 if i == j else random.uniform(-1, 1) for j in range(len(self.particle_colors))] for i in range(len(self.particle_colors))]
+                matrix = [[1 if i == j else round(random.uniform(-1, 1),1) for j in range(len(self.particle_colors))] for i in range(len(self.particle_colors))]
                 for i in range(len(self.particle_colors)):
                     for j in range(len(self.particle_colors)):
                         if i > j:

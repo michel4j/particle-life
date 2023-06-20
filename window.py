@@ -21,92 +21,112 @@ class Window():
         # UI Shit
         self.space_between_labels = 14
         self.font_size = 10 
+        self.ui_batch = pyglet.graphics.Batch()
         
         # Create FPS label
         self.fps_label = pyglet.text.Label("FPS: ",
                          font_size=self.font_size,
+                         batch=self.ui_batch,
                          x=2, y=self.window.height  - self.space_between_labels)
         
         
         # Create number of particles label
         self.particle_count_label = pyglet.text.Label("Particles: " + str(len(self.particle_canvas.particles)),
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.fps_label.y - (self.space_between_labels*3))
         # Create label how to adjust number of particles
         self.adjust_particle_count_label = pyglet.text.Label("Q/A to increase/decrease",
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.particle_count_label.y - self.space_between_labels)
         
         # Create number of colors label
         self.number_of_colors_label = pyglet.text.Label("Number of colors: " + str(self.particle_canvas.number_of_colors),
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.adjust_particle_count_label.y - (self.space_between_labels*2))
         # Create label how to adjust number of colors
         self.adjust_number_of_colors_label = pyglet.text.Label("W/S to increase/decrease",
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.number_of_colors_label.y - self.space_between_labels)
         
         # Create attraction matrix label
         self.attraction_matrix_label = pyglet.text.Label("Attraction matrix: 2",
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.adjust_number_of_colors_label.y - (self.space_between_labels*2))
         # Create label how to adjust attraction matrix
         self.adjust_attraction_matrix_label = pyglet.text.Label("1-6 to change matrix",
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.attraction_matrix_label.y - self.space_between_labels)
         # Create label how to adjust attraction matrix
         self.adjust_attraction_matrix_label2 = pyglet.text.Label("0 for random matrix",
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.adjust_attraction_matrix_label.y - self.space_between_labels)
     
         # Create dt label
         self.dt_label = pyglet.text.Label("Time dt: " + str(round(self.particle_canvas.engine.dt, 3)), 
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.adjust_attraction_matrix_label2.y - (self.space_between_labels*3))
         # Create label how to adjust dt
         self.adjust_dt_label = pyglet.text.Label("E/D to increase/decrease",
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.dt_label.y - self.space_between_labels)
         
         # Create rMax label
         self.rMax_label = pyglet.text.Label("rMax: " + str(self.particle_canvas.engine.rMax), 
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.adjust_dt_label.y - (self.space_between_labels*2))
         # Create label how to adjust rMax
         self.adjust_rMax_label = pyglet.text.Label("R/F to increase/decrease",
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.rMax_label.y - self.space_between_labels)
         
         # Create forceFactor label
         self.forceFactor_label = pyglet.text.Label("ForceFactor: " + str(self.particle_canvas.engine.forceFactor),
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.adjust_rMax_label.y - (self.space_between_labels*2))
                         
         # Create label how to adjust forceFactor
         self.adjust_forceFactor_label = pyglet.text.Label("T/G to increase/decrease",
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.forceFactor_label.y - self.space_between_labels)
         
         # Create frictionHalfLife label
         self.frictionHalfLife_label = pyglet.text.Label("FrictionHalfLife: " + str(self.particle_canvas.engine.frictionHalfLife),
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.adjust_forceFactor_label.y - (self.space_between_labels*2))
         # Create label how to adjust frictionHalfLife
         self.adjust_frictionHalfLife_label = pyglet.text.Label("Y/H to increase/decrease",
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.frictionHalfLife_label.y - self.space_between_labels)
         
         # Create frictionFactor label
         self.frictionFactor_label = pyglet.text.Label("FrictionFactor: " + str(round(self.particle_canvas.engine.frictionFactor, 3)),
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.adjust_frictionHalfLife_label.y - (self.space_between_labels*2))
         # Create label how to adjust frictionFactor
         self.adjust_frictionFactor_label = pyglet.text.Label("Changes automatically ",
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.frictionFactor_label.y - self.space_between_labels)
         # Create 2nd label how to adjust frictionFactor
         self.adjust_frictionFactor_label2 = pyglet.text.Label("based on frictionHalfLife",
                         font_size=self.font_size,
+                        batch=self.ui_batch,
                         x=2, y=self.adjust_frictionFactor_label.y - self.space_between_labels)
         # Example of matrix to show how it works
 
@@ -122,47 +142,101 @@ class Window():
         # Create matrix label array row 1 - show colors
         self.matrix_label_row1 = pyglet.text.Label("\t\t\t\t\t\t\t|Red |Oran|Yell|Gree|Blue|Purp",
                         font_size=self.font_size-1,
+                        font_name='Monospace',
                         x=2, y=self.adjust_frictionFactor_label2.y - (self.space_between_labels*2))
         
         # Create matrix label array row 2 - show row of color red
         matrix_row2 = self.get_attraction_matrix_row(0)
         self.matrix_label_row2 = pyglet.text.Label(matrix_row2,
                         font_size=self.font_size-1,
+                        font_name='Courier',
                         x=2, y=self.matrix_label_row1.y - self.space_between_labels)
         
         # Create matrix label array row 3 - show row of color orange
         matrix_row3 = self.get_attraction_matrix_row(1)
         self.matrix_label_row3 = pyglet.text.Label(matrix_row3,
                         font_size=self.font_size-1,
+                        font_name='Courier',
                         x=2, y=self.matrix_label_row2.y - self.space_between_labels)
         
         # Create matrix label array row 4 - show row of color yellow
         matrix_row4 = self.get_attraction_matrix_row(2)
         self.matrix_label_row4 = pyglet.text.Label(matrix_row4,
                         font_size=self.font_size-1,
+                        font_name='Times New Roman',
                         x=2, y=self.matrix_label_row3.y - self.space_between_labels)
         
         # Create matrix label array row 5 - show row of color green
         matrix_row5 = self.get_attraction_matrix_row(3)
         self.matrix_label_row5 = pyglet.text.Label(matrix_row5,
                         font_size=self.font_size-1,
+                        font_name='Monospace',
                         x=2, y=self.matrix_label_row4.y - self.space_between_labels)
         
         # Create matrix label array row 6 - show row of color blue
         matrix_row6 = self.get_attraction_matrix_row(4)
         self.matrix_label_row6 = pyglet.text.Label(matrix_row6,
                         font_size=self.font_size-1,
+                        font_name='Monospace',
+                        batch=self.ui_batch,
                         x=2, y=self.matrix_label_row5.y - self.space_between_labels)
         
         # Create matrix label array row 7 - show row of color purple
         matrix_row7 = self.get_attraction_matrix_row(5)
         self.matrix_label_row7 = pyglet.text.Label(matrix_row7,
                         font_size=self.font_size-1,
+                        font_name='Monospace',
                         x=2, y=self.matrix_label_row6.y - self.space_between_labels)
         
-        
+        #     |Red |Oran|Yell|Gree|Blue|Purp
+        # Red | 0.3|-0.5|-0.3| 0.3| 0.5| 0.3
+        # Oran|-0.5| 0.3|-0.5|-0.3|-0.5|-0.3
+        # Yell|-0.3|-0.5| 0.3|-0.5|-0.3|-0.5
+        # Gree| 0.3|-0.3|-0.5| 0.3|-0.5|-0.3
+        # Blue| 0.5|-0.5|-0.3|-0.5| 0.3|-0.5
+        # Purp| 0.3|-0.3|-0.5|-0.3|-0.5| 0.3
 
+        self.first_bracket_space = 10
+        self.bracket_space = 27
         
+        self.row1_1 = self.create_matrix_label_color("R", x=2, y=self.matrix_label_row7.y - (self.space_between_labels*2))
+
+        self.row2_1 = self.create_matrix_label_color("R", x=2, y=self.row1_1.y - self.space_between_labels)
+        self.row2_2 = self.create_matrix_label_bracket(x=self.row2_1.x + self.first_bracket_space, y=self.row1_1.y - self.space_between_labels)
+        self.row2_3 = self.create_matrix_label_element(0, 0, x=self.row2_2.x, y=self.row1_1.y - self.space_between_labels)
+        self.row2_4 = self.create_matrix_label_bracket(x=self.row2_2.x + self.bracket_space, y=self.row1_1.y - self.space_between_labels)
+        self.row2_5 = self.create_matrix_label_element(0, 1, x=self.row2_4.x, y=self.row1_1.y - self.space_between_labels)
+        self.row2_6 = self.create_matrix_label_bracket(x=self.row2_4.x + self.bracket_space, y=self.row1_1.y - self.space_between_labels)
+        self.row2_7 = self.create_matrix_label_element(0, 2, x=self.row2_6.x, y=self.row1_1.y - self.space_between_labels)
+        self.row2_8 = self.create_matrix_label_bracket(x=self.row2_6.x + self.bracket_space, y=self.row1_1.y - self.space_between_labels)
+        self.row2_9 = self.create_matrix_label_element(0, 3, x=self.row2_8.x, y=self.row1_1.y - self.space_between_labels)
+        self.row2_10 = self.create_matrix_label_bracket(x=self.row2_8.x + self.bracket_space, y=self.row1_1.y - self.space_between_labels)
+        self.row2_11 = self.create_matrix_label_element(0, 4, x=self.row2_10.x, y=self.row1_1.y - self.space_between_labels)
+        self.row2_12 = self.create_matrix_label_bracket(x=self.row2_10.x + self.bracket_space, y=self.row1_1.y - self.space_between_labels)
+        self.row2_13 = self.create_matrix_label_element(0, 5, x=self.row2_12.x, y=self.row1_1.y - self.space_between_labels)
+
+        # Create colors 
+        self.row1_color = self.create_matrix_label_color("R", x=2, y=self.row2_13.y - self.space_between_labels)
+        self.row2_color = self.create_matrix_label_color("O", x=2, y=self.row1_color.y - self.space_between_labels)
+        self.row3_color = self.create_matrix_label_color("Y", x=2, y=self.row2_color.y - self.space_between_labels)
+        self.row4_color = self.create_matrix_label_color("G", x=2, y=self.row3_color.y - self.space_between_labels)
+        self.row5_color = self.create_matrix_label_color("B", x=2, y=self.row4_color.y - self.space_between_labels)
+        self.row6_color = self.create_matrix_label_color("P", x=2, y=self.row5_color.y - self.space_between_labels)
+        
+        # Create brackets 
+        for i in range(7):
+            if i == 0:
+                for j in range(7):
+                    self.create_matrix_label_bracket(x=2 + self.first_bracket_space, y=self.row1_color.y - self.space_between_labels * j)
+            else:
+                for j in range(7):
+                    self.create_matrix_label_bracket(x=2 + self.first_bracket_space + self.bracket_space * i, y=self.row1_color.y - self.space_between_labels * j)
+        
+        # Create matrix elements
+        self.element_labels = []
+        for i in range(6):
+            for j in range(6):
+                self.element_labels.append(self.create_matrix_label_element(i, j, x=2 + self.first_bracket_space + self.bracket_space * j, y=self.row1_color.y - (self.space_between_labels * i + 1)))
 
         
         @self.window.event
@@ -289,33 +363,33 @@ class Window():
 
         # UI
         self.updateLabelText()
-        self.fps_label.draw()
+        # self.fps_label.draw()
 
-        self.adjust_particle_count_label.draw()
-        self.particle_count_label.draw()
+        # self.adjust_particle_count_label.draw()
+        # self.particle_count_label.draw()
         
-        self.adjust_dt_label.draw()
-        self.dt_label.draw()
+        # self.adjust_dt_label.draw()
+        # self.dt_label.draw()
 
-        self.adjust_rMax_label.draw()
-        self.rMax_label.draw()
+        # self.adjust_rMax_label.draw()
+        # self.rMax_label.draw()
 
-        self.adjust_forceFactor_label.draw()
-        self.forceFactor_label.draw()
+        # self.adjust_forceFactor_label.draw()
+        # self.forceFactor_label.draw()
 
-        self.adjust_frictionHalfLife_label.draw()
-        self.frictionHalfLife_label.draw()
+        # self.adjust_frictionHalfLife_label.draw()
+        # self.frictionHalfLife_label.draw()
 
-        self.adjust_frictionFactor_label.draw()
-        self.adjust_frictionFactor_label2.draw()
-        self.frictionFactor_label.draw()
+        # self.adjust_frictionFactor_label.draw()
+        # self.adjust_frictionFactor_label2.draw()
+        # self.frictionFactor_label.draw()
 
-        self.adjust_number_of_colors_label.draw()
-        self.number_of_colors_label.draw()
+        # self.adjust_number_of_colors_label.draw()
+        # self.number_of_colors_label.draw()
 
-        self.adjust_attraction_matrix_label.draw()
-        self.adjust_attraction_matrix_label2.draw()
-        self.attraction_matrix_label.draw()
+        # self.adjust_attraction_matrix_label.draw()
+        # self.adjust_attraction_matrix_label2.draw()
+        # self.attraction_matrix_label.draw()
 
         self.matrix_label_row1.draw()
         self.matrix_label_row2.draw()
@@ -324,10 +398,48 @@ class Window():
         self.matrix_label_row5.draw()
         self.matrix_label_row6.draw()
         self.matrix_label_row7.draw()
+        self.row1_1.draw()
+        self.row2_1.draw()
+        self.row2_2.draw()
+        self.row2_3.draw()
+        self.row2_4.draw()
+        self.row2_5.draw()
+        self.row2_6.draw()
+        self.row2_7.draw()
+        self.row2_8.draw()
+        self.row2_9.draw()
+        self.row2_10.draw()
+        self.row2_11.draw()
+        self.row2_12.draw()
+        self.row2_13.draw()
+
+        self.ui_batch.draw()
+
 
 
         if(self.debug):
             print("3. Draw UI:\t\t\t\t\t" + str(time.time_ns()  / (10 ** 9) - particle_time) + " seconds")
+
+    def create_matrix_label_color(self, color, x, y):
+            return pyglet.text.Label(color,
+                        font_size=self.font_size-1,
+                        batch=self.ui_batch,
+                        x=x, y=y)
+
+
+    def create_matrix_label_bracket(self, x, y):
+        return pyglet.text.Label("|",
+                    font_size=self.font_size-1,
+                    batch=self.ui_batch,
+                    x=x, y=y)
+
+
+    def create_matrix_label_element(self, matrix_row_number, matrix_column_number, x, y):
+        element = str(self.particle_canvas.attraction_matrix[matrix_row_number][matrix_column_number])
+        return pyglet.text.Label(element,
+                    font_size=self.font_size-1,
+                    batch=self.ui_batch,
+                    x=x, y=y)
     
     def get_attraction_matrix_row(self, matrix_row_number):
         """ Get attraction matrix row as string """
