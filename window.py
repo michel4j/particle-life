@@ -198,6 +198,19 @@ class Window():
                         font_size=self.font_size,
                         batch=self.ui_batch,
                         x=2, y=self.adjust_frictionFactor_label.y - self.space_between_labels)
+        
+        # Create label to turn on/off debug mode
+        self.debug_label = pyglet.text.Label("Debug mode: " + str(self.particle_canvas.debug),
+                        font_size=self.font_size,
+                        batch=self.ui_batch,
+                        x=2, y=self.adjust_frictionFactor_label2.y - (self.space_between_labels*2))
+        # Create label how to turn on/off debug mode
+        self.adjust_debug_label = pyglet.text.Label("Press P to turn on/off",
+                        font_size=self.font_size,
+                        batch=self.ui_batch,
+                        x=2, y=self.debug_label.y - self.space_between_labels)
+        
+        
 
         
         @self.window.event
@@ -329,6 +342,16 @@ class Window():
                     self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] -= 0.1
                     self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] = round(self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]], 1)
 
+            # turn on/off debug mode
+            elif symbol == key.P:
+                if self.debug:
+                    self.debug = False
+                    self.particle_canvas.debug = False
+                    self.particle_canvas.engine.debug = False
+                else:
+                    self.debug = True
+                    self.particle_canvas.debug = True
+                    self.particle_canvas.engine.debug = True
 
 
 

@@ -3,7 +3,8 @@ import particle_canvas
 import window
 import time
 
-debug_state = False
+global debug_state
+debug_state = True
 
 Particle_Canvas = particle_canvas.ParticleCanvas(total_particles = 10000, 
                                                  particle_colors = ['red', 'orange', 'yellow', 'light green', 'light blue', 'dark purple'], 
@@ -37,13 +38,14 @@ def game_loop(self):
         fps = round(1 / cycle_time)
 
     # Print cycle time and FPS
-    if debug_state:
+    if Particle_Canvas.debug:
         print("--------------------------------------------------------------------")
         print("Cycle time:\t\t\t\t\t" + str(cycle_time) + " seconds")
         print("FPS:\t\t\t\t\t\t" + str(fps) + "\n\n")
 
 def update_FPS_label(self):
     Window.updateFPS(fps)
+
 
 if __name__ == "__main__":
     pyglet.clock.schedule_interval(game_loop, 1/60.0) # update game loop 60 times per second
