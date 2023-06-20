@@ -26,7 +26,7 @@ class ParticleCanvas():
         self.selected_colors = self.particle_colors[:self.number_of_colors]
         self.particle_size = particle_size
         self.particles = self.generateRandomParticles()
-        self.attractionMatrix = self.returnExampleAttractionMatrices(2)
+        self.attraction_matrix = self.returnExampleAttractionMatrices(2)
 
         # Engine
         self.engine = engine.Engine(particle_canvas = self, debug = debug)
@@ -39,7 +39,7 @@ class ParticleCanvas():
 
     def updateMatrix(self, matrixNumber):
         """ Update attraction matrix """
-        self.attractionMatrix = self.returnExampleAttractionMatrices(matrixNumber)    
+        self.attraction_matrix = self.returnExampleAttractionMatrices(matrixNumber)    
 
     def updateParticleColors(self):
         """ Update particle colors """
@@ -64,13 +64,13 @@ class ParticleCanvas():
 
         return particles
 
-    def generateRandomAttractionMatrix(self):
+    def generateRandomattraction_matrix(self):
         """ Generate random attraction matrix. 
             Values are between -1 and 1"""
         matrix = [[0 for x in range(len(self.particle_colors))] for y in range(len(self.particle_colors))]
         for i in range(len(self.particle_colors)):
             for j in range(len(self.particle_colors)):
-                matrix[i][j] = random.uniform(-1, 1)
+                matrix[i][j] = round(random.uniform(-1, 1),1)
         return matrix
 
     def returnExampleAttractionMatrices(self, matrixNumber):
@@ -131,6 +131,6 @@ class ParticleCanvas():
                         if i > j:
                             matrix[i][j] = matrix[j][i]
             case _:
-                matrix = self.generateRandomAttractionMatrix()
+                matrix = self.generateRandomattraction_matrix()
         
         return matrix

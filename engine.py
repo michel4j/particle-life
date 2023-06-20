@@ -65,7 +65,7 @@ class Engine():
                                             float forceFactor,
                                             float frictionFactor,
                                             float dt,
-                                            __global float* attractionMatrix,
+                                            __global float* attraction_matrix,
                                             int numColors) {
             int gid = get_global_id(0);
 
@@ -91,7 +91,7 @@ class Engine():
 
                 // Check if distance is greater than 0 and less than rMax
                 if (r > 0 && r < rMax) {
-                    float a = attractionMatrix[prtclColorIndex * numColors + otherPrtclColorIndex]; 
+                    float a = attraction_matrix[prtclColorIndex * numColors + otherPrtclColorIndex]; 
                     float f = force(r / rMax, a);
                     totalForceX += f * rx / r;
                     totalForceY += f * ry / r;
@@ -122,7 +122,7 @@ class Engine():
         positions = np.zeros(2 * num_particles, dtype=np.float32)
         velocities = np.zeros(2 * num_particles, dtype=np.float32)
         colors = np.zeros(num_particles, dtype=np.int32)
-        attraction_matrix = np.array(self.particle_canvas.attractionMatrix, dtype=np.float32)
+        attraction_matrix = np.array(self.particle_canvas.attraction_matrix, dtype=np.float32)
 
         for i, prtcl in enumerate(self.particle_canvas.particles):
             positions[2 * i] = prtcl.posX
