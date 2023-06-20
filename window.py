@@ -25,7 +25,7 @@ class Window():
         self.first_bracket_space = 10
         self.bracket_space = 27
         self.ui_batch = pyglet.graphics.Batch()
-        self.demo_mode = False
+        self.demo_mode = 0
 
         # All labels
 
@@ -212,15 +212,21 @@ class Window():
                         x=2, y=self.debug_label.y - self.space_between_labels)
         
         # Create label to turn on/off demo mode
-        self.demo_label = pyglet.text.Label("Demo mode: " + str(self.demo_mode),
-                        font_size=self.font_size,
+        self.demo_label = pyglet.text.Label("Demo mode:",
+                        font_size=self.font_size-1,
                         batch=self.ui_batch,
                         x=2, y=self.adjust_debug_label.y - (self.space_between_labels*2))
+        # Create label to turn on/off demo mode
+        self.demo_label2 = pyglet.text.Label("off",
+                        font_size=self.font_size,
+                        batch=self.ui_batch,
+                        x=2, y=self.demo_label.y - self.space_between_labels)
+        
         # Create label how to turn on/off demo mode
         self.adjust_demo_label = pyglet.text.Label("Press O to turn on/off",
                         font_size=self.font_size,
                         batch=self.ui_batch,
-                        x=2, y=self.demo_label.y - self.space_between_labels)
+                        x=2, y=self.demo_label2.y - self.space_between_labels)
         
         @self.window.event
         def on_key_press(symbol, modifiers):
@@ -362,10 +368,11 @@ class Window():
 
             # turn on/off demo mode
             elif symbol == key.O:
-                if self.demo_mode:
-                    self.demo_mode = False
+                if self.demo_mode < 3:
+                    self.demo_mode += 1
                 else:
-                    self.demo_mode = True
+                    self.demo_mode = 0
+
 
         self.debug = debug
     
@@ -431,7 +438,14 @@ class Window():
                     self.element_labels[i][j].color = (255, 255, 255, 255)
                 self.element_labels[i][j].text = str(self.particle_canvas.attraction_matrix[i][j])
         self.debug_label.text = "Debug mode: " + str(self.debug)
-        self.demo_label.text = "Demo mode: " + str(self.demo_mode)
+        if self.demo_mode == 0:
+            self.demo_label2.text = "off"
+        elif self.demo_mode == 1:
+            self.demo_label2.text = "random matrices"
+        elif self.demo_mode == 2:
+            self.demo_label2.text = "random example matrices"
+        elif self.demo_mode == 3:
+            self.demo_label2.text = "example matrices in set order"
 
     def createNewVertexList(self):
         vertices, colors = self.updateVertexList()
