@@ -33,12 +33,14 @@ class Engine():
     def update(self):
         """ Update particle velocities """
         if(self.debug):
-            begin = time.time_ns()  / (10 ** 9)
+            begin_ns = time.time_ns()
         
         self.updateParticles()
 
         if(self.debug):
-            print("1. Move particles:\t\t\t\t" + str(time.time_ns()  / (10 ** 9) - begin) + " seconds")
+            move_particles_time_ns = time.time_ns() - begin_ns
+            move_particles_time = move_particles_time_ns / 1000000000
+            print("1. Move particles:\t\t\t\t" + str(move_particles_time) + " seconds")
 
     def calculateFrictionFactor(self):
         """ Calculate friction factor """

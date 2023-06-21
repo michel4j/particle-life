@@ -44,7 +44,7 @@ class Window():
     def update(self):
         """ Update window """
         if(self.debug):
-            begin = time.time_ns()  / (10 ** 9)
+            begin_ns = time.time_ns()
         
         self.window.clear()
         
@@ -53,15 +53,18 @@ class Window():
         self.batch.draw()
 
         if(self.debug):
-            particle_time = time.time_ns()  / (10 ** 9)
-            print("2. Draw particles:\t\t\t\t" + str(particle_time - begin) + " seconds")
+            particle_time_ns = time.time_ns() - begin_ns
+            particle_time = particle_time_ns / 1000000000
+            print("2. Draw particles:\t\t\t\t" + str(particle_time) + " seconds")
 
         # UI
         self.updateLabelText()
         self.ui_batch.draw()
 
         if(self.debug):
-            print("3. Draw UI:\t\t\t\t\t" + str(time.time_ns()  / (10 ** 9) - particle_time) + " seconds")
+            ui_time_ns = time.time_ns() - particle_time_ns - begin_ns
+            ui_time = ui_time_ns / 1000000000
+            print("3. Draw UI:\t\t\t\t\t" + str(ui_time) + " seconds")
 
     def create_key_press_events(self):
         @self.window.event

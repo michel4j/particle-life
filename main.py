@@ -25,7 +25,7 @@ Window = window.Window(particle_canvas = Particle_Canvas,
 def game_loop(self):
     
     # For cycle_time calculation
-    begin = time.time_ns()  / (10 ** 9) # convert to seconds
+    begin_ns = time.time_ns()
 
     # Update particles on canvas
     Particle_Canvas.update()
@@ -34,7 +34,8 @@ def game_loop(self):
     Window.update()
 
     # Calculate cycle time
-    cycle_time = (time.time_ns()  / (10 ** 9)) - begin
+    cycle_time_ns = time.time_ns() - begin_ns 
+    cycle_time = cycle_time_ns / 1000000000
 
     # Update FPS when cycle time is not zero
     global fps
