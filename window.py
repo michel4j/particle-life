@@ -7,7 +7,7 @@ import color_to_RGB
 class Window():
     
     def __init__(self, particle_canvas, title, debug):
-        # Create isntance of particle_canvas class
+        # Inherit particle canvas object
         self.particle_canvas = particle_canvas
         
         # Window
@@ -33,8 +33,184 @@ class Window():
         self.debug = debug
 
         # All labels
+        self.create_labels()
 
-        # Create FPS label
+        # Key press events
+        self.create_key_press_events()
+
+
+
+    
+    def update(self):
+        """ Update window """
+        if(self.debug):
+            begin = time.time_ns()  / (10 ** 9)
+        
+        self.window.clear()
+        
+        # Particles
+        self.updateObjectPositions()
+        self.batch.draw()
+
+        if(self.debug):
+            particle_time = time.time_ns()  / (10 ** 9)
+            print("2. Draw particles:\t\t\t\t" + str(particle_time - begin) + " seconds")
+
+        # UI
+        self.updateLabelText()
+        self.ui_batch.draw()
+
+        if(self.debug):
+            print("3. Draw UI:\t\t\t\t\t" + str(time.time_ns()  / (10 ** 9) - particle_time) + " seconds")
+
+    def create_key_press_events(self):
+        @self.window.event
+        def on_key_press(symbol, modifiers):
+            
+            # change particle count on key press
+            if symbol == key.Q:
+                if self.particle_canvas.total_particles < 100000 and self.particle_canvas.total_particles >= 1000:
+                    self.particle_canvas.total_particles += 1000
+                elif self.particle_canvas.total_particles < 1000 and self.particle_canvas.total_particles >= 100:
+                    self.particle_canvas.total_particles += 100
+                elif self.particle_canvas.total_particles < 100 and self.particle_canvas.total_particles >= 10:
+                    self.particle_canvas.total_particles += 10
+                elif self.particle_canvas.total_particles < 10 and self.particle_canvas.total_particles >= 1:
+                    self.particle_canvas.total_particles += 1
+                self.particle_canvas.updateParticleNumber()
+                # Clear old batch and create new vertex list and add it to batch
+                self.batch = pyglet.graphics.Batch()
+                self.vertex_list = self.createNewVertexList()
+            elif symbol == key.A:
+                if self.particle_canvas.total_particles > 1000:
+                    self.particle_canvas.total_particles -= 1000
+                elif self.particle_canvas.total_particles > 100:
+                    self.particle_canvas.total_particles -= 100
+                elif self.particle_canvas.total_particles > 10:
+                    self.particle_canvas.total_particles -= 10
+                elif self.particle_canvas.total_particles > 1:
+                    self.particle_canvas.total_particles -= 1
+                self.particle_canvas.updateParticleNumber()
+                # Clear old batch and create new vertex list and add it to batch
+                self.batch = pyglet.graphics.Batch()
+                self.vertex_list = self.createNewVertexList()
+            
+            # change number of colors on key press
+            elif symbol == key.W:
+                if self.particle_canvas.number_of_colors < len(self.particle_canvas.particle_colors):
+                    self.particle_canvas.number_of_colors += 1
+                    self.particle_canvas.updateParticleColors()
+                    # Clear old batch and create new vertex list and add it to batch
+                    self.batch = pyglet.graphics.Batch()
+                    self.vertex_list = self.createNewVertexList()
+            elif symbol == key.S:
+                if self.particle_canvas.number_of_colors > 1:
+                    self.particle_canvas.number_of_colors -= 1
+                    self.particle_canvas.updateParticleColors()
+                    # Clear old batch and create new vertex list and add it to batch
+                    self.batch = pyglet.graphics.Batch()
+                    self.vertex_list = self.createNewVertexList()
+
+            # change dt on key press
+            elif symbol == key.E:
+                self.particle_canvas.engine.dt += 0.001
+            elif symbol == key.D:
+                self.particle_canvas.engine.dt -= 0.001
+
+            # change rMax on key press
+            elif symbol == key.R:
+                self.particle_canvas.engine.rMax += 5
+            elif symbol == key.F:
+                if self.particle_canvas.engine.rMax > 5:
+                    self.particle_canvas.engine.rMax -= 5
+
+            # change forceFactor on key press
+            elif symbol == key.T:
+                self.particle_canvas.engine.forceFactor += 0.1
+            elif symbol == key.G:
+                self.particle_canvas.engine.forceFactor -= 0.1
+
+            # change frictionHalfLife on key press
+            elif symbol == key.Y:
+                self.particle_canvas.engine.frictionHalfLife += 0.01
+                self.particle_canvas.engine.frictionHalfLife = round(self.particle_canvas.engine.frictionHalfLife, 2)
+            elif symbol == key.H:
+                self.particle_canvas.engine.frictionHalfLife -= 0.01
+                self.particle_canvas.engine.frictionHalfLife = round(self.particle_canvas.engine.frictionHalfLife, 2)
+
+        
+            # change attraction matrix on key press
+            elif symbol == key._1:
+                self.particle_canvas.updateMatrix(1)
+                self.attraction_matrix_label.text = "Attraction matrix: snakes"
+                self.particle_canvas.engine.frictionHalfLife = 0.01
+                self.particle_canvas.engine.calculateFrictionFactor()
+                self.particle_canvas.forceFactor = 0.1
+                self.particle_canvas.engine.rMax = 50
+                self.particle_canvas.engine.dt = 0.002
+
+            elif symbol == key._2:
+                self.particle_canvas.updateMatrix(2)
+                self.attraction_matrix_label.text = "Attraction matrix: random fun"
+            elif symbol == key._3:
+                self.particle_canvas.updateMatrix(3)
+                self.attraction_matrix_label.text = "Attraction matrix: chains 1"
+            elif symbol == key._4:
+                self.particle_canvas.updateMatrix(4)
+                self.attraction_matrix_label.text = "Attraction matrix: chains 2"
+            elif symbol == key._5:
+                self.particle_canvas.updateMatrix(5)
+                self.attraction_matrix_label.text = "Attraction matrix: chains 3"
+            elif symbol == key._6:
+                self.particle_canvas.updateMatrix(6)
+                self.attraction_matrix_label.text = "Attraction matrix:rand symmetry"
+            elif symbol == key._0:
+                self.particle_canvas.updateMatrix(0)
+                self.attraction_matrix_label.text = "Attraction matrix: random"
+
+
+            # change selected element in attraction matrix
+            elif symbol == key.UP:
+                if self.selected_attraction_matrix_element[0] > 0:
+                    self.selected_attraction_matrix_element[0] -= 1
+            elif symbol == key.DOWN:
+                if self.selected_attraction_matrix_element[0] < 5:
+                    self.selected_attraction_matrix_element[0] += 1
+            elif symbol == key.LEFT:
+                if self.selected_attraction_matrix_element[1] > 0:
+                    self.selected_attraction_matrix_element[1] -= 1
+            elif symbol == key.RIGHT:
+                if self.selected_attraction_matrix_element[1] < 5:
+                    self.selected_attraction_matrix_element[1] += 1
+
+            # change value of selected element in attraction matrix. move up by 0.1 if equals is pressed. move down by 0.1 if minus is pressed
+            elif symbol == key.EQUAL:
+                if self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] < 1:
+                    self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] += 0.1
+                    self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] = round(self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]], 1)
+            elif symbol == key.MINUS:
+                if self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] > -1:
+                    self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] -= 0.1
+                    self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] = round(self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]], 1)
+
+            # turn on/off debug mode
+            elif symbol == key.P:
+                if self.debug:
+                    self.debug = False
+                    self.particle_canvas.engine.debug = False
+                else:
+                    self.debug = True
+                    self.particle_canvas.engine.debug = True
+
+            # turn on/off demo mode
+            elif symbol == key.O:
+                if self.demo_mode < 3:
+                    self.demo_mode += 1
+                else:
+                    self.demo_mode = 0
+
+    def create_labels(self):
+                # Create FPS label
         self.fps_label = pyglet.text.Label("FPS: ",
                          font_size=self.font_size,
                          batch=self.ui_batch,
@@ -280,174 +456,6 @@ class Window():
                         batch=self.ui_batch,
                         x=2, y=self.demo_label2.y - self.space_between_labels)
         
-        # Key press events
-        
-        @self.window.event
-        def on_key_press(symbol, modifiers):
-            
-            # change particle count on key press
-            if symbol == key.Q:
-                if self.particle_canvas.total_particles < 100000 and self.particle_canvas.total_particles >= 1000:
-                    self.particle_canvas.total_particles += 1000
-                elif self.particle_canvas.total_particles < 1000 and self.particle_canvas.total_particles >= 100:
-                    self.particle_canvas.total_particles += 100
-                elif self.particle_canvas.total_particles < 100 and self.particle_canvas.total_particles >= 10:
-                    self.particle_canvas.total_particles += 10
-                elif self.particle_canvas.total_particles < 10 and self.particle_canvas.total_particles >= 1:
-                    self.particle_canvas.total_particles += 1
-                self.particle_canvas.updateParticleNumber()
-                # Clear old batch and create new vertex list and add it to batch
-                self.batch = pyglet.graphics.Batch()
-                self.vertex_list = self.createNewVertexList()
-            elif symbol == key.A:
-                if self.particle_canvas.total_particles > 1000:
-                    self.particle_canvas.total_particles -= 1000
-                elif self.particle_canvas.total_particles > 100:
-                    self.particle_canvas.total_particles -= 100
-                elif self.particle_canvas.total_particles > 10:
-                    self.particle_canvas.total_particles -= 10
-                elif self.particle_canvas.total_particles > 1:
-                    self.particle_canvas.total_particles -= 1
-                self.particle_canvas.updateParticleNumber()
-                # Clear old batch and create new vertex list and add it to batch
-                self.batch = pyglet.graphics.Batch()
-                self.vertex_list = self.createNewVertexList()
-            
-            # change number of colors on key press
-            elif symbol == key.W:
-                if self.particle_canvas.number_of_colors < len(self.particle_canvas.particle_colors):
-                    self.particle_canvas.number_of_colors += 1
-                    self.particle_canvas.updateParticleColors()
-                    # Clear old batch and create new vertex list and add it to batch
-                    self.batch = pyglet.graphics.Batch()
-                    self.vertex_list = self.createNewVertexList()
-            elif symbol == key.S:
-                if self.particle_canvas.number_of_colors > 1:
-                    self.particle_canvas.number_of_colors -= 1
-                    self.particle_canvas.updateParticleColors()
-                    # Clear old batch and create new vertex list and add it to batch
-                    self.batch = pyglet.graphics.Batch()
-                    self.vertex_list = self.createNewVertexList()
-
-            # change dt on key press
-            elif symbol == key.E:
-                self.particle_canvas.engine.dt += 0.001
-            elif symbol == key.D:
-                self.particle_canvas.engine.dt -= 0.001
-
-            # change rMax on key press
-            elif symbol == key.R:
-                self.particle_canvas.engine.rMax += 5
-            elif symbol == key.F:
-                if self.particle_canvas.engine.rMax > 5:
-                    self.particle_canvas.engine.rMax -= 5
-
-            # change forceFactor on key press
-            elif symbol == key.T:
-                self.particle_canvas.engine.forceFactor += 0.1
-            elif symbol == key.G:
-                self.particle_canvas.engine.forceFactor -= 0.1
-
-            # change frictionHalfLife on key press
-            elif symbol == key.Y:
-                self.particle_canvas.engine.frictionHalfLife += 0.01
-                self.particle_canvas.engine.frictionHalfLife = round(self.particle_canvas.engine.frictionHalfLife, 2)
-            elif symbol == key.H:
-                self.particle_canvas.engine.frictionHalfLife -= 0.01
-                self.particle_canvas.engine.frictionHalfLife = round(self.particle_canvas.engine.frictionHalfLife, 2)
-
-        
-            # change attraction matrix on key press
-            elif symbol == key._1:
-                self.particle_canvas.updateMatrix(1)
-                self.attraction_matrix_label.text = "Attraction matrix: snakes"
-                self.particle_canvas.engine.frictionHalfLife = 0.01
-                self.particle_canvas.engine.calculateFrictionFactor()
-                self.particle_canvas.forceFactor = 0.1
-                self.particle_canvas.engine.rMax = 50
-                self.particle_canvas.engine.dt = 0.002
-
-            elif symbol == key._2:
-                self.particle_canvas.updateMatrix(2)
-                self.attraction_matrix_label.text = "Attraction matrix: random fun"
-            elif symbol == key._3:
-                self.particle_canvas.updateMatrix(3)
-                self.attraction_matrix_label.text = "Attraction matrix: chains 1"
-            elif symbol == key._4:
-                self.particle_canvas.updateMatrix(4)
-                self.attraction_matrix_label.text = "Attraction matrix: chains 2"
-            elif symbol == key._5:
-                self.particle_canvas.updateMatrix(5)
-                self.attraction_matrix_label.text = "Attraction matrix: chains 3"
-            elif symbol == key._6:
-                self.particle_canvas.updateMatrix(6)
-                self.attraction_matrix_label.text = "Attraction matrix:rand symmetry"
-            elif symbol == key._0:
-                self.particle_canvas.updateMatrix(0)
-                self.attraction_matrix_label.text = "Attraction matrix: random"
-
-
-            # change selected element in attraction matrix
-            elif symbol == key.UP:
-                if self.selected_attraction_matrix_element[0] > 0:
-                    self.selected_attraction_matrix_element[0] -= 1
-            elif symbol == key.DOWN:
-                if self.selected_attraction_matrix_element[0] < 5:
-                    self.selected_attraction_matrix_element[0] += 1
-            elif symbol == key.LEFT:
-                if self.selected_attraction_matrix_element[1] > 0:
-                    self.selected_attraction_matrix_element[1] -= 1
-            elif symbol == key.RIGHT:
-                if self.selected_attraction_matrix_element[1] < 5:
-                    self.selected_attraction_matrix_element[1] += 1
-
-            # change value of selected element in attraction matrix. move up by 0.1 if equals is pressed. move down by 0.1 if minus is pressed
-            elif symbol == key.EQUAL:
-                if self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] < 1:
-                    self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] += 0.1
-                    self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] = round(self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]], 1)
-            elif symbol == key.MINUS:
-                if self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] > -1:
-                    self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] -= 0.1
-                    self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]] = round(self.particle_canvas.attraction_matrix[self.selected_attraction_matrix_element[0]][self.selected_attraction_matrix_element[1]], 1)
-
-            # turn on/off debug mode
-            elif symbol == key.P:
-                if self.debug:
-                    self.debug = False
-                    self.particle_canvas.engine.debug = False
-                else:
-                    self.debug = True
-                    self.particle_canvas.engine.debug = True
-
-            # turn on/off demo mode
-            elif symbol == key.O:
-                if self.demo_mode < 3:
-                    self.demo_mode += 1
-                else:
-                    self.demo_mode = 0
-    
-    def update(self):
-        """ Update window """
-        if(self.debug):
-            begin = time.time_ns()  / (10 ** 9)
-        
-        self.window.clear()
-        
-        # Particles
-        self.updateObjectPositions()
-        self.batch.draw()
-
-        if(self.debug):
-            particle_time = time.time_ns()  / (10 ** 9)
-            print("2. Draw particles:\t\t\t\t" + str(particle_time - begin) + " seconds")
-
-        # UI
-        self.updateLabelText()
-        self.ui_batch.draw()
-
-        if(self.debug):
-            print("3. Draw UI:\t\t\t\t\t" + str(time.time_ns()  / (10 ** 9) - particle_time) + " seconds")
 
     def create_matrix_label_color(self, color, x, y):
         """ Create label for color in matrix """
@@ -511,7 +519,7 @@ class Window():
 
 
     def createNewVertexList(self):
-        """ Create new vertex list for particles """	
+        """ Create new vertex list for particles and add it to batch """	
         vertices, colors = self.updateVertexList()
         return self.batch.add(len(self.particle_canvas.particles) * 4, pyglet.gl.GL_QUADS, None,
                                                        ('v2f', vertices),

@@ -5,17 +5,17 @@ import numpy as np
 
 class Engine():
     def __init__(self, particle_canvas, debug):
-        # Time
+        # Inherit particle canvas object
+        self.particle_canvas = particle_canvas
+        
+        # Time varialbe
         self.dt = 0.005
 
-        # Particles 
+        # Particles variables
         self.rMax = 30
         self.frictionHalfLife = 0.04
         self.frictionFactor = math.pow(0.5, self.dt / self.frictionHalfLife)
         self.forceFactor = 0.5
-        
-        # Canvas
-        self.particle_canvas = particle_canvas
 
         # Pyopencl 
         self.platform = cl.get_platforms()[0]
@@ -24,7 +24,11 @@ class Engine():
         self.queue = cl.CommandQueue(self.context)
         self.program = cl.Program(self.context, self.kernelCode()).build()
 
+        # Debug
         self.debug = debug
+
+
+        
 
     def update(self):
         """ Update particle velocities """

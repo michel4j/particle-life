@@ -26,10 +26,11 @@ class ParticleCanvas():
         self.current_demo_matrix = current_demo_matrix
         self.key_press = current_demo_matrix
 
-        
-
         # Debug
         self.debug = debug
+
+
+        
 
     def update(self):
         """ Update particle canvas """

@@ -57,7 +57,7 @@ def demo_mode(self):
     
     # Demo mode random matrices
     elif Window.demo_mode == 1:
-        Particle_Canvas.attraction_matrix = Particle_Canvas.returnExampleAttractionMatrices(0)
+        Particle_Canvas.updateMatrix(0)
     
     # Demo mode random example matrices
     elif Window.demo_mode == 2:
