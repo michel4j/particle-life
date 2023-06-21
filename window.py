@@ -1,15 +1,16 @@
 import pyglet
-import color_to_RGB
 import time
 from pyglet.window import key
 
+import color_to_RGB
+
 class Window():
     
-    def __init__(self, particle_canvas, title='Particle Life', debug = False):
-        # Particle canvas object
+    def __init__(self, particle_canvas, title, debug):
+        # Create isntance of particle_canvas class
         self.particle_canvas = particle_canvas
         
-        # Create window
+        # Window
         self.window_size = {'Width': particle_canvas.canvas_size['Width'], 'Height': particle_canvas.canvas_size['Height']}
         self.title = title
         self.window = pyglet.window.Window(self.window_size['Width'] + particle_canvas.UI_space, self.window_size['Height'], self.title)
@@ -27,6 +28,9 @@ class Window():
         self.ui_batch = pyglet.graphics.Batch()
         self.demo_mode = 0
         self.color_labels = []
+
+        # Debug
+        self.debug = debug
 
         # All labels
 
@@ -276,6 +280,8 @@ class Window():
                         batch=self.ui_batch,
                         x=2, y=self.demo_label2.y - self.space_between_labels)
         
+        # Key press events
+        
         @self.window.event
         def on_key_press(symbol, modifiers):
             
@@ -420,9 +426,6 @@ class Window():
                     self.demo_mode += 1
                 else:
                     self.demo_mode = 0
-
-
-        self.debug = debug
     
     def update(self):
         """ Update window """
@@ -447,13 +450,15 @@ class Window():
             print("3. Draw UI:\t\t\t\t\t" + str(time.time_ns()  / (10 ** 9) - particle_time) + " seconds")
 
     def create_matrix_label_color(self, color, x, y):
-            return pyglet.text.Label(color,
-                        font_size=self.font_size-1,
-                        batch=self.ui_batch,
-                        x=x, y=y)
+        """ Create label for color in matrix """
+        return pyglet.text.Label(color,
+                    font_size=self.font_size-1,
+                    batch=self.ui_batch,
+                    x=x, y=y)
 
 
     def create_matrix_label_bracket(self, x, y):
+        """ Create label for bracket in matrix """
         return pyglet.text.Label("|",
                     font_size=self.font_size-1,
                     batch=self.ui_batch,
@@ -461,6 +466,7 @@ class Window():
 
 
     def create_matrix_label_element(self, matrix_row_number, matrix_column_number, x, y):
+        """ Create label for element in matrix """	
         element = str(self.particle_canvas.attraction_matrix[matrix_row_number][matrix_column_number])
         return pyglet.text.Label(element,
                     font_size=self.font_size-1,
@@ -470,6 +476,7 @@ class Window():
 
 
     def updateLabelText(self):
+        """ Update labels text """	
         self.particle_count_label.text = "Particles: " + str(len(self.particle_canvas.particles))
         self.number_of_colors_label.text = "Number of colors: " + str(self.particle_canvas.number_of_colors)
         self.dt_label.text = "Time dt: " + str(round(self.particle_canvas.engine.dt, 3))
@@ -504,6 +511,7 @@ class Window():
 
 
     def createNewVertexList(self):
+        """ Create new vertex list for particles """	
         vertices, colors = self.updateVertexList()
         return self.batch.add(len(self.particle_canvas.particles) * 4, pyglet.gl.GL_QUADS, None,
                                                        ('v2f', vertices),

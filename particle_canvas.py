@@ -1,19 +1,14 @@
 import random
+
 import particle
-import time
 import engine
 
 class ParticleCanvas():
     
-    def __init__(self, 
-                 total_particles = 50, 
-                 particle_colors = ['red', 'green', 'blue'], 
-                 number_of_colors = 3,
-                 canvas_border = False, 
-                 particle_size = 2, 
-                 canvas_size = {'Width': 1200, 'Height': 1200}, 
-                 current_demo_matrix = 0,
-                 debug = False):
+    def __init__(self, total_particles, particle_colors, number_of_colors, canvas_border, particle_size, canvas_size, current_demo_matrix, debug):
+        # Create instance of engine class
+        self.engine = engine.Engine(particle_canvas = self, debug = debug)
+
         # Canvas
         self.canvas_border = canvas_border
         self.canvas_size = {'Width': canvas_size['Width'], 'Height': canvas_size['Height']}
@@ -31,9 +26,9 @@ class ParticleCanvas():
         self.current_demo_matrix = current_demo_matrix
         self.key_press = current_demo_matrix
 
-        # Engine
-        self.engine = engine.Engine(particle_canvas = self, debug = debug)
+        
 
+        # Debug
         self.debug = debug
 
     def update(self):

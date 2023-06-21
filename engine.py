@@ -4,7 +4,7 @@ import pyopencl as cl
 import numpy as np
 
 class Engine():
-    def __init__(self, particle_canvas, debug = False):
+    def __init__(self, particle_canvas, debug):
         # Time
         self.dt = 0.005
 
@@ -116,6 +116,7 @@ class Engine():
         """
 
     def updateParticles(self):
+        """ Update particle velocities and positions"""	
         num_particles = len(self.particle_canvas.particles)
         num_colors = len(self.particle_canvas.particle_colors)
 

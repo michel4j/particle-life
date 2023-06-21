@@ -1,4 +1,5 @@
 def transform(color):
+    """ Transform color name to RGB value""" 
     if color == "red":
         return (233, 0, 45)
     elif color == "green":

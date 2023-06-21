@@ -1,11 +1,12 @@
 import pyglet
-import particle_canvas
-import window
 import time
 from pynput.keyboard import Key, Controller
 import random
-keyboard = Controller()
 
+import particle_canvas
+import window
+
+keyboard = Controller()
 debug_state = False
 
 Particle_Canvas = particle_canvas.ParticleCanvas(total_particles = 10000, 
@@ -50,16 +51,23 @@ def update_FPS_label(self):
     Window.updateFPS(fps)
 
 def demo_mode(self):
+    # Demo mode off
     if Window.demo_mode == 0:
         pass
+    
+    # Demo mode random matrices
     elif Window.demo_mode == 1:
         Particle_Canvas.attraction_matrix = Particle_Canvas.returnExampleAttractionMatrices(0)
+    
+    # Demo mode random example matrices
     elif Window.demo_mode == 2:
         # generate random (seed with time) number between 0 and 6
         random.seed(time.time_ns())
         random_number = random.randint(0, 6)
         keyboard.press(str(random_number))
         keyboard.release(str(random_number)) 
+    
+    # Demo mode example matrices in set order
     else:
         # Change current demo matrix in this order: 0 -> 1 -> 0 -> 2 -> 0 -> 3 -> 0 -> 4 -> 0 -> 5 and loop
         keyboard.press(str(Particle_Canvas.key_press))
