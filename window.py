@@ -26,6 +26,7 @@ class Window():
         self.bracket_space = 27
         self.ui_batch = pyglet.graphics.Batch()
         self.demo_mode = 0
+        self.color_labels = []
 
         # All labels
 
@@ -57,12 +58,59 @@ class Window():
                         font_size=self.font_size,
                         batch=self.ui_batch,
                         x=2, y=self.number_of_colors_label.y - self.space_between_labels)
+
+        # Create label showing color in the order: 1. Color - Short name of color
+        self.color_label = pyglet.text.Label("1. Red - R",
+                        font_size=self.font_size,
+                        batch=self.ui_batch,
+                        color = (255, 255, 255, 255),
+                        x=2, y=self.adjust_number_of_colors_label.y - self.space_between_labels)
+        
+        # Create label showing color in the order: 2. Color - Short name of color
+        self.color_label2 = pyglet.text.Label("2. Orange - O",
+                        font_size=self.font_size,
+                        batch=self.ui_batch,
+                        color = (255, 255, 255, 255),
+                        x=2, y=self.color_label.y - self.space_between_labels)
+        
+        # Create label showing color in the order: 3. Color - Short name of color
+        self.color_label3 = pyglet.text.Label("3. Yellow - Y",
+                        font_size=self.font_size,
+                        batch=self.ui_batch,
+                        color = (255, 255, 255, 255),
+                        x=2, y=self.color_label2.y - self.space_between_labels)
+        
+        # Create label showing color in the order: 4. Color - Short name of color
+        self.color_label4 = pyglet.text.Label("4. Green - G",
+                        font_size=self.font_size,
+                        batch=self.ui_batch,
+                        color = (255, 255, 255, 255),
+                        x=2, y=self.color_label3.y - self.space_between_labels)
+        
+        # Create label showing color in the order: 5. Color - Short name of color
+        self.color_label5 = pyglet.text.Label("5. Blue - B",
+                        font_size=self.font_size,
+                        batch=self.ui_batch,
+                        color = (255, 255, 255, 0),
+                        x=2, y=self.color_label4.y - self.space_between_labels)
+        
+        
+        # Create label showing color in the order: 6. Color - Short name of color
+        self.color_label6 = pyglet.text.Label("6. Purple - P",
+                        font_size=self.font_size,
+                        batch=self.ui_batch,
+                        color = (255, 255, 255, 0),
+                        x=2, y=self.color_label5.y - self.space_between_labels)
+        
+        # Fill color labels list
+        self.color_labels = [self.color_label, self.color_label2, self.color_label3, self.color_label4, self.color_label5, self.color_label6]
+        
         
         # Create attraction matrix label
         self.attraction_matrix_label = pyglet.text.Label("Attraction matrix: random fun",
                         font_size=self.font_size,
                         batch=self.ui_batch,
-                        x=2, y=self.adjust_number_of_colors_label.y - (self.space_between_labels*2))
+                        x=2, y=self.color_label6.y - (self.space_between_labels*2))
         # Create label how to adjust attraction matrix
         self.adjust_attraction_matrix_label = pyglet.text.Label("1-6 to change matrix",
                         font_size=self.font_size,
@@ -446,6 +494,14 @@ class Window():
             self.demo_label2.text = "random example matrices"
         elif self.demo_mode == 3:
             self.demo_label2.text = "example matrices in set order"
+
+        for i in range(len(self.color_labels)):
+            if i < self.particle_canvas.number_of_colors:
+                self.color_labels[i].color = (255, 255, 255, 255)
+            else:
+                self.color_labels[i].color = (255, 255, 255, 0)
+
+
 
     def createNewVertexList(self):
         vertices, colors = self.updateVertexList()
