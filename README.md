@@ -7,21 +7,21 @@ Rendering the particles is done OpenGL, and older version (2.0) is used for this
 
 ## Python packages
 
-* numpy (1.24.3)  
+numpy (1.24.3)  
 
     pip install numpy  
   
-* pynput (1.7.6)  
+pynput (1.7.6)  
 
-  pip install pynput
+    pip install pynput
   
-* pyopencl (2023.1)
+pyopencl (2023.1)
 
-  pip install pyopencl
+    pip install pyopencl
 
-* pyglet (1.5.27 - an older maintenance version)
+pyglet (1.5.27 - an older maintenance version)
 
-  git clone https://github.com/pyglet/pyglet.git  
-  cd pyglet  
-  git checkout pyglet-1.5-maintenance  
-  python setup.py install --user  
+      git clone https://github.com/pyglet/pyglet.git  
+      cd pyglet  
+      git checkout pyglet-1.5-maintenance  
+      python setup.py install --user  
