@@ -22,6 +22,9 @@ pyopencl (2023.1)
 pyglet (1.5.27 - an older maintenance version)
 
       git clone https://github.com/pyglet/pyglet.git  
+      
       cd pyglet  
+      
       git checkout pyglet-1.5-maintenance  
+      
       python setup.py install --user  
