@@ -2,8 +2,8 @@
 Python based simulation of Particle Life that uses OpenCL and OpenGL.  
 
 ## Dependencies
-This application uses Pyopencl to calculate forces between particles, thus OpenCL needs to be installed on your system.  
-Rendering the particles is done OpenGL, and older version (2.0) is used for this.   
+Particle-Life uses Pyopencl to calculate forces between particles, thus OpenCL needs to be installed on your system.  
+Rendering the particles is done with OpenGL. An older version (OpenGL 2.0) is used for this.   
 
 ## Python packages
 
