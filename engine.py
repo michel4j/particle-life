@@ -1,14 +1,16 @@
 import math
 import time
-import pyopencl as cl
-import numpy as np
 
-class Engine():
+import numpy as np
+import pyopencl as cl
+
+
+class Engine:
     def __init__(self, particle_canvas, debug):
         # Inherit particle canvas object
         self.particle_canvas = particle_canvas
-        
-        # Time varialbe
+
+        # Time variable
         self.dt = 0.005
 
         # Particles variables
@@ -22,35 +24,33 @@ class Engine():
         self.device = self.platform.get_devices()[0]
         self.context = cl.Context([self.device])
         self.queue = cl.CommandQueue(self.context)
-        self.program = cl.Program(self.context, self.kernelCode()).build()
+        self.program = cl.Program(self.context, self.kernel_code()).build()
 
         # Debug
         self.debug = debug
 
-
-        
-
     def update(self):
-        """ Update particle velocities """
-        if(self.debug):
-            begin_ns = time.time_ns()
-        
-        self.updateParticles()
+        """
+        Update particle velocities
+        """
 
-        if(self.debug):
+        self.update_particles()
+
+        if self.debug:
+            begin_ns = time.time_ns()
             move_particles_time_ns = time.time_ns() - begin_ns
             move_particles_time = move_particles_time_ns / 1000000000
             print("1. Move particles:\t\t\t\t" + str(move_particles_time) + " seconds")
 
-    def calculateFrictionFactor(self):
+    def calculate_friction_factor(self):
         """ Calculate friction factor """
         if self.frictionHalfLife != 0:
             self.frictionFactor = math.pow(0.5, self.dt / self.frictionHalfLife)
         else:
             self.frictionFactor = 0
 
-    def kernelCode(self):
-        return"""
+    def kernel_code(self):
+        return """
         // Kernel code
         float force(float r, float a) {
             float beta = 0.3;
@@ -121,8 +121,10 @@ class Engine():
         }
         """
 
-    def updateParticles(self):
-        """ Update particle velocities and positions"""	
+    def update_particles(self):
+        """
+        Update particle velocities and positions
+        """
         num_particles = len(self.particle_canvas.particles)
         num_colors = len(self.particle_canvas.particle_colors)
 
@@ -132,58 +134,71 @@ class Engine():
         attraction_matrix = np.array(self.particle_canvas.attraction_matrix, dtype=np.float32)
 
         for i, prtcl in enumerate(self.particle_canvas.particles):
-            positions[2 * i] = prtcl.posX
-            positions[2 * i + 1] = prtcl.posY
-            velocities[2 * i] = prtcl.velX
-            velocities[2 * i + 1] = prtcl.velY
+            positions[2 * i] = prtcl.pos_x
+            positions[2 * i + 1] = prtcl.pos_y
+            velocities[2 * i] = prtcl.vel_x
+            velocities[2 * i + 1] = prtcl.vel_y
             colors[i] = self.particle_canvas.particle_colors.index(prtcl.color)
 
-        positions_buffer = cl.Buffer(self.context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, hostbuf=positions)
-        velocities_buffer = cl.Buffer(self.context, cl.mem_flags.READ_WRITE | cl.mem_flags.COPY_HOST_PTR, hostbuf=velocities)
+        positions_buffer = cl.Buffer(
+            self.context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR,
+            hostbuf=positions
+        )
+        velocities_buffer = cl.Buffer(
+            self.context, cl.mem_flags.READ_WRITE | cl.mem_flags.COPY_HOST_PTR,
+            hostbuf=velocities
+        )
         colors_buffer = cl.Buffer(self.context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, hostbuf=colors)
-        attraction_matrix_buffer = cl.Buffer(self.context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, hostbuf=attraction_matrix)
+        attraction_matrix_buffer = cl.Buffer(
+            self.context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR,
+            hostbuf=attraction_matrix
+        )
 
-        self.program.updateParticleVelocities(self.queue, (num_particles,), None,
-                                            positions_buffer, velocities_buffer, colors_buffer,
-                                            np.int32(num_particles), np.float32(self.rMax),
-                                            np.float32(self.forceFactor), np.float32(self.frictionFactor), np.float32(self.dt),
-                                            attraction_matrix_buffer, np.int32(num_colors))
+        self.program.updateParticleVelocities(
+            self.queue, (num_particles,), None,
+            positions_buffer, velocities_buffer, colors_buffer,
+            np.int32(num_particles), np.float32(self.rMax),
+            np.float32(self.forceFactor), np.float32(self.frictionFactor),
+            np.float32(self.dt),
+            attraction_matrix_buffer, np.int32(num_colors)
+        )
 
         cl.enqueue_copy(self.queue, velocities, velocities_buffer)
 
         for i, prtcl in enumerate(self.particle_canvas.particles):
-            prtcl.velX = velocities[2 * i]
-            prtcl.velY = velocities[2 * i + 1]
-            self.updateParticlePosition(prtcl)
+            prtcl.vel_x = velocities[2 * i]
+            prtcl.vel_y = velocities[2 * i + 1]
+            self.update_particle_position(prtcl)
 
-    def updateParticlePosition(self, prtcl):
+    def update_particle_position(self, prtcl):
         """ Update particle position based on velocity """
-        if(self.particle_canvas.canvas_border):
+        if self.particle_canvas.canvas_border:
             # revert velocity if particle is out of bounds
-            prtcl.posX += prtcl.velX
-            if prtcl.posX > self.particle_canvas.canvas_size['Width'] + self.particle_canvas.UI_space or prtcl.posX < -1 + self.particle_canvas.UI_space:
-                prtcl.posX -= prtcl.velX
+            prtcl.pos_x += prtcl.vel_x
+            if prtcl.pos_x > self.particle_canvas.canvas_size[
+                'Width'] + self.particle_canvas.UI_space or prtcl.pos_x < -1 + self.particle_canvas.UI_space:
+                prtcl.pos_x -= prtcl.vel_x
 
-            prtcl.posY += prtcl.velY
-            if prtcl.posY > self.particle_canvas.canvas_size['Height'] or prtcl.posY < 0:
-                prtcl.posY -= prtcl.velY
+            prtcl.pos_y += prtcl.vel_y
+            if prtcl.pos_y > self.particle_canvas.canvas_size['Height'] or prtcl.pos_y < 0:
+                prtcl.pos_y -= prtcl.vel_y
         else:
             # wrap particle around canvas if out of bounds
-            prtcl.posX += prtcl.velX
-            if prtcl.posX > self.particle_canvas.canvas_size['Width'] + self.particle_canvas.UI_space:
-                distance_over_border = prtcl.posX - self.particle_canvas.canvas_size['Width']
-                prtcl.posX = distance_over_border
-            
-            elif prtcl.posX < -1 + self.particle_canvas.UI_space:
-                distance_over_border = prtcl.posX - self.particle_canvas.UI_space
-                prtcl.posX = self.particle_canvas.canvas_size['Width'] + self.particle_canvas.UI_space + distance_over_border
+            prtcl.pos_x += prtcl.vel_x
+            if prtcl.pos_x > self.particle_canvas.canvas_size['Width'] + self.particle_canvas.UI_space:
+                distance_over_border = prtcl.pos_x - self.particle_canvas.canvas_size['Width']
+                prtcl.pos_x = distance_over_border
 
-            prtcl.posY += prtcl.velY
-            if prtcl.posY > self.particle_canvas.canvas_size['Height']:
-                distance_over_border = prtcl.posY - self.particle_canvas.canvas_size['Height']
-                prtcl.posY = distance_over_border
+            elif prtcl.pos_x < -1 + self.particle_canvas.UI_space:
+                distance_over_border = prtcl.pos_x - self.particle_canvas.UI_space
+                prtcl.pos_x = self.particle_canvas.canvas_size[
+                                 'Width'] + self.particle_canvas.UI_space + distance_over_border
 
-            elif prtcl.posY < -1:
-                distance_over_border = prtcl.posY
-                prtcl.posY = self.particle_canvas.canvas_size['Height'] + distance_over_border
-            
+            prtcl.pos_y += prtcl.vel_y
+            if prtcl.pos_y > self.particle_canvas.canvas_size['Height']:
+                distance_over_border = prtcl.pos_y - self.particle_canvas.canvas_size['Height']
+                prtcl.pos_y = distance_over_border
+
+            elif prtcl.pos_y < -1:
+                distance_over_border = prtcl.pos_y
+                prtcl.pos_y = self.particle_canvas.canvas_size['Height'] + distance_over_border
