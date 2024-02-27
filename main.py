@@ -11,12 +11,12 @@ keyboard = Controller()
 debug_state = False
 
 particle_canvas = canvas.ParticleCanvas(
-    total_particles=10000,
+    total_particles=20000,
     particle_colors=['red', 'orange', 'yellow', 'light green', 'light blue', 'dark purple'],
     number_of_colors=4,
-    particle_size=2,
+    particle_size=1,
     canvas_border=False,
-    canvas_size={'Width': 1200, 'Height': 1200},
+    canvas_size={'Width': 900, 'Height': 900},
     current_demo_matrix=0,
     debug=debug_state
 )
@@ -55,7 +55,7 @@ def game_loop(self):
 
 
 def update_fps_label(self):
-    Window.updateFPS(fps)
+    Window.update_fps(fps)
 
 
 def demo_mode(self):
