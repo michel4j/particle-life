@@ -222,6 +222,9 @@ class Window:
                     self.demo_mode += 1
                 else:
                     self.demo_mode = 0
+            # randomize particles
+            elif symbol == key.HOME:
+                self.particle_canvas.update_particle_number()
 
     def create_labels(self):
         # Create FPS label
@@ -544,6 +547,14 @@ class Window:
             x=2, y=self.demo_label2.y - self.space_between_labels
         )
 
+        # Create label to randomize particles
+        self.adjust_random_label = pyglet.text.Label(
+            "Press HOME to randomize",
+            font_size=self.font_size, font_name=self.font_name,
+            batch=self.ui_batch,
+            x=2, y=self.adjust_demo_label.y - (self.space_between_labels * 2)
+        )
+
     def create_matrix_label_color(self, color, x, y):
         """ Create label for color in matrix """
         return pyglet.text.Label(
@@ -555,10 +566,12 @@ class Window:
 
     def create_matrix_label_bracket(self, x, y):
         """ Create label for bracket in matrix """
-        return pyglet.text.Label("|",
-                                 font_size=self.font_size - 1,
-                                 batch=self.ui_batch,
-                                 x=x, y=y)
+        return pyglet.text.Label(
+            "|",
+            font_size=self.font_size - 1,
+            batch=self.ui_batch,
+            x=x, y=y
+        )
 
     def create_matrix_label_element(self, matrix_row_number, matrix_column_number, x, y):
         """ Create label for element in matrix """
