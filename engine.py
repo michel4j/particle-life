@@ -4,6 +4,141 @@ import time
 import numpy as np
 import pyopencl as cl
 
+OLD_OPENCL_KERNEL = """
+// Kernel code
+float force(float r, float a) {
+    float beta = 0.3;
+    if (r < beta) {
+        return r / beta - 1;
+    } else if (beta < r && r < 1) {
+        return a * (1 - fabs(2 * r - 1 - beta) / (1 - beta));
+    } else {
+        return 0;
+    }
+}
+
+__kernel void updateParticleVelocities(__global float* positions,
+                                    __global float* velocities,
+                                    __global int* colors,
+                                    int numParticles,
+                                    float rMax,
+                                    float forceFactor,
+                                    float frictionFactor,
+                                    float dt,
+                                    __global float* attraction_matrix,
+                                    int numColors) {
+    int gid = get_global_id(0);
+
+    float totalForceX = 0;
+    float totalForceY = 0;
+
+    float prtclX = positions[2*gid];
+    float prtclY = positions[2*gid + 1];
+    int prtclColorIndex = colors[gid];
+
+    for (int i = 0; i < numParticles; i++) {
+        if (i == gid)
+            continue;
+
+        float otherPrtclX = positions[2*i];
+        float otherPrtclY = positions[2*i + 1];
+        int otherPrtclColorIndex = colors[i];
+
+        // Calculate distance between particles
+        float rx = otherPrtclX - prtclX;
+        float ry = otherPrtclY - prtclY;
+        float r = sqrt(rx * rx + ry * ry);
+
+        // Check if distance is greater than 0 and less than rMax
+        if (r > 0 && r < rMax) {
+            float a = attraction_matrix[prtclColorIndex * numColors + otherPrtclColorIndex]; 
+            float f = force(r / rMax, a);
+            totalForceX += f * rx / r;
+            totalForceY += f * ry / r;
+        }
+    }
+
+    totalForceX *= rMax * forceFactor;
+    totalForceY *= rMax * forceFactor;
+
+    float velocityX = velocities[2*gid];
+    float velocityY = velocities[2*gid + 1];
+
+    velocityX *= frictionFactor;
+    velocityY *= frictionFactor;
+
+    velocityX += totalForceX * dt;
+    velocityY += totalForceY * dt;
+
+    velocities[2*gid] = velocityX;
+    velocities[2*gid + 1] = velocityY;
+}
+"""
+
+OPENCL_KERNEL = """
+// Optimized Kernel code
+float force(float r, float a, float beta, float oneMinusBeta) {
+    if (r < beta) {
+        return r / beta - 1.0f;
+    } else if (r < 1.0f) { // Since r is already checked to be greater than beta in the previous condition
+        return a * (1.0f - fabs(2.0f * r - 1.0f - beta) * oneMinusBeta);
+    } else {
+        return 0.0f;
+    }
+}
+
+__kernel void updateParticleVelocities(__global const float* positions,
+                                        __global float* velocities,
+                                        __global const int* colors,
+                                        const int numParticles,
+                                        const float rMax,
+                                        const float forceFactor,
+                                        const float frictionFactor,
+                                        const float dt,
+                                        __global const float* attraction_matrix,
+                                        const int numColors) {
+    int gid = get_global_id(0);
+
+    float totalForceX = 0.0f;
+    float totalForceY = 0.0f;
+
+    const float prtclX = positions[2*gid];
+    const float prtclY = positions[2*gid + 1];
+    const int prtclColorIndex = colors[gid];
+    
+    const float beta = 0.3f;
+    const float oneMinusBeta = 1.0f / (1.0f - beta);
+
+    for (int i = 0; i < numParticles; i++) {
+        if (i == gid)
+            continue;
+
+        float dx = positions[2*i] - prtclX;
+        float dy = positions[2*i + 1] - prtclY;
+        float rSquared = dx * dx + dy * dy;
+        if (rSquared > 0.0f && rSquared < rMax * rMax) {
+            float r = sqrt(rSquared);
+            float normalizedR = r / rMax;
+            float a = attraction_matrix[prtclColorIndex * numColors + colors[i]]; 
+            float f = force(normalizedR, a, beta, oneMinusBeta);
+            float factor = f / r;
+            totalForceX += factor * dx;
+            totalForceY += factor * dy;
+        }
+    }
+
+    totalForceX *= rMax * forceFactor;
+    totalForceY *= rMax * forceFactor;
+
+    // Use temporary variables to store updated velocities to reduce read-modify-write operations
+    float newVelocityX = velocities[2*gid] * frictionFactor + totalForceX * dt;
+    float newVelocityY = velocities[2*gid + 1] * frictionFactor + totalForceY * dt;
+
+    velocities[2*gid] = newVelocityX;
+    velocities[2*gid + 1] = newVelocityY;
+}
+"""
+
 
 class Engine:
     def __init__(self, particle_canvas, debug):
@@ -11,13 +146,13 @@ class Engine:
         self.particle_canvas = particle_canvas
 
         # Time variable
-        self.dt = 0.005
+        self.dt = 0.002
 
         # Particles variables
         self.rMax = 30
-        self.frictionHalfLife = 0.04
+        self.frictionHalfLife = 0.02
         self.frictionFactor = math.pow(0.5, self.dt / self.frictionHalfLife)
-        self.forceFactor = 0.5
+        self.forceFactor = 0.2
 
         # Pyopencl 
         self.platform = cl.get_platforms()[0]
@@ -50,76 +185,7 @@ class Engine:
             self.frictionFactor = 0
 
     def kernel_code(self):
-        return """
-        // Kernel code
-        float force(float r, float a) {
-            float beta = 0.3;
-            if (r < beta) {
-                return r / beta - 1;
-            } else if (beta < r && r < 1) {
-                return a * (1 - fabs(2 * r - 1 - beta) / (1 - beta));
-            } else {
-                return 0;
-            }
-        }
-
-        __kernel void updateParticleVelocities(__global float* positions,
-                                            __global float* velocities,
-                                            __global int* colors,
-                                            int numParticles,
-                                            float rMax,
-                                            float forceFactor,
-                                            float frictionFactor,
-                                            float dt,
-                                            __global float* attraction_matrix,
-                                            int numColors) {
-            int gid = get_global_id(0);
-
-            float totalForceX = 0;
-            float totalForceY = 0;
-
-            float prtclX = positions[2*gid];
-            float prtclY = positions[2*gid + 1];
-            int prtclColorIndex = colors[gid];
-
-            for (int i = 0; i < numParticles; i++) {
-                if (i == gid)
-                    continue;
-
-                float otherPrtclX = positions[2*i];
-                float otherPrtclY = positions[2*i + 1];
-                int otherPrtclColorIndex = colors[i];
-
-                // Calculate distance between particles
-                float rx = otherPrtclX - prtclX;
-                float ry = otherPrtclY - prtclY;
-                float r = sqrt(rx * rx + ry * ry);
-
-                // Check if distance is greater than 0 and less than rMax
-                if (r > 0 && r < rMax) {
-                    float a = attraction_matrix[prtclColorIndex * numColors + otherPrtclColorIndex]; 
-                    float f = force(r / rMax, a);
-                    totalForceX += f * rx / r;
-                    totalForceY += f * ry / r;
-                }
-            }
-
-            totalForceX *= rMax * forceFactor;
-            totalForceY *= rMax * forceFactor;
-
-            float velocityX = velocities[2*gid];
-            float velocityY = velocities[2*gid + 1];
-
-            velocityX *= frictionFactor;
-            velocityY *= frictionFactor;
-
-            velocityX += totalForceX * dt;
-            velocityY += totalForceY * dt;
-
-            velocities[2*gid] = velocityX;
-            velocities[2*gid + 1] = velocityY;
-        }
-        """
+        return OLD_OPENCL_KERNEL
 
     def update_particles(self):
         """
